@@ -1,0 +1,79 @@
+.hero-banner {
+  display: flex;
+  background-color: #000;
+  color: white;
+  height: 500px;
+  overflow: hidden;
+}
+
+.hero-content {
+  flex: 1;
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  margin: 0 0 20px 0;
+  font-weight: 400;
+}
+
+.hero-subtitle {
+  font-size: 3rem;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+}
+
+.customer-reviews {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.customer-avatars {
+  display: flex;
+  margin-right: 15px;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #ccc;
+  border: 2px solid white;
+  margin-right: -10px;
+}
+
+.review-text {
+  font-size: 14px;
+  margin: 0;
+}
+
+.hero-image {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .hero-banner {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .hero-content {
+    padding: 40px 20px;
+  }
+  
+  .hero-image {
+    height: 300px;
+  }
+}

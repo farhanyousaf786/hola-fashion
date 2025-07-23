@@ -1,0 +1,39 @@
+.category-item {
+  text-align: center;
+}
+
+.category-link {
+  text-decoration: none;
+  color: #333;
+  display: block;
+}
+
+.category-image-container {
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%; /* Creates a square aspect ratio */
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.category-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.category-link:hover .category-image {
+  transform: scale(1.05);
+}
+
+.category-name {
+  font-size: 14px;
+  margin: 10px 0;
+  font-weight: 400;
+}

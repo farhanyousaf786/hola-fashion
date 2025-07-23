@@ -1,0 +1,88 @@
+.bottom-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: white;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 20px;
+}
+
+.nav-menu li a {
+  text-decoration: none;
+  color: #333;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.nav-menu li a:hover {
+  color: #f05454;
+}
+
+.dropdown-arrow {
+  margin-left: 4px;
+  width: 8px;
+  height: 5px;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-item:hover .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.user-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.user-actions a {
+  color: #333;
+  text-decoration: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-icon {
+  width: 20px;
+  height: 20px;
+  transition: opacity 0.2s ease;
+}
+
+.wishlist-link .action-icon {
+  width: 33px;
+  height: 33px;
+}
+
+.user-actions a:hover .action-icon {
+  opacity: 0.7;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #f05454;
+  color: white;
+  font-size: 10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+}
