@@ -6,8 +6,9 @@ const MiddleHeader = () => {
     <div className="middle-header">
       <div className="currency-selector">
         <button className="currency-btn">
-          <img src="/images/us-flag.png" alt="US Flag" className="flag-icon" />
+          <img src="/icons/flag-icon.svg" alt="US Flag" className="flag-icon" />
           USD
+          <span className="dropdown-arrow">▼</span>
         </button>
       </div>
       

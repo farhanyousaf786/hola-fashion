@@ -10,19 +10,17 @@ const HeroBanner = () => {
         <h3 className="hero-subtitle">Your Style.</h3>
         <div className="customer-reviews">
           <div className="customer-avatars">
-            {/* These would be actual customer images in a real implementation */}
-            <div className="avatar"></div>
-            <div className="avatar"></div>
-            <div className="avatar"></div>
-            <div className="avatar"></div>
-            <div className="avatar"></div>
+            <div className="avatar"><img src="/images/demo-image.png" alt="Customer" /></div>
+            <div className="avatar"><img src="/images/demo-image.png" alt="Customer" /></div>
+            <div className="avatar"><img src="/images/demo-image.png" alt="Customer" /></div>
+            <div className="avatar"><img src="/images/demo-image.png" alt="Customer" /></div>
+            <div className="avatar"><img src="/images/demo-image.png" alt="Customer" /></div>
           </div>
           <p className="review-text">1000+ happy customers</p>
         </div>
       </div>
       <div className="hero-image">
-        {/* This would be replaced with an actual image in production */}
-        <img src="/images/hero-fashion.jpg" alt="Fashion models wearing stylish outfits" />
+        <img src="/images/demo-image.png" alt="Fashion showcase" className="demo-image" />
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './BottomHeader.css';
 
 const BottomHeader = () => {
@@ -12,7 +13,7 @@ const BottomHeader = () => {
           <a href="#hoco">HOCO <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></a>
         </li>
         <li className="dropdown-item">
-          <a href="#wedding">WEDDING <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></a>
+          <Link to="/wedding">WEDDING <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></Link>
         </li>
         <li className="dropdown-item">
           <a href="#wedding-guest">WEDDING GUEST <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></a>
@@ -42,7 +43,6 @@ const BottomHeader = () => {
         </a>
         <a href="#cart" className="cart-link">
           <img src="/icons/cart-icon.svg" alt="Cart" className="action-icon" />
-          <span className="cart-count">0</span>
         </a>
       </div>
     </nav>
