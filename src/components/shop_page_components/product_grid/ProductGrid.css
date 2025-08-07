@@ -12,11 +12,14 @@
 .product-image-container {
   position: relative;
   overflow: hidden;
+  aspect-ratio: 3/4;
+  background-color: #f8f9fa;
 }
 
 .product-image {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
   transition: transform 0.3s ease;
 }

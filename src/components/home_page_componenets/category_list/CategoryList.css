@@ -1,6 +1,8 @@
 .category-section {
-  padding: 40px 0;
+  padding: 40px 20px;
   background-color: #fff;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .section-title {
@@ -15,14 +17,29 @@
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
-  gap: 15px;
+  gap: 20px;
   padding: 0 20px;
-  scrollbar-width: none; /* For Firefox */
-  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  justify-content: flex-start;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
 }
 
 .category-grid::-webkit-scrollbar {
-  display: none; /* For Chrome, Safari, and Opera */
+  height: 6px;
+}
+
+.category-grid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.category-grid::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.category-grid::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }
 
 @media (max-width: 768px) {

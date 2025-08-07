@@ -1,55 +1,88 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './ProductPage.css';
+import { getItemById } from '../../firebase/services/itemService';
 
 const ProductPage = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedColor, setSelectedColor] = useState('ivory');
+  const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock product data
-  // Debug log to check if component is rendering and receiving productId
-  console.log('ProductPage rendering with productId:', productId);
-  
+  // Scroll to top when component mounts
   useEffect(() => {
-    // In a real app, this would be an API call to fetch product details
-    const mockProduct = {
-      id: productId,
-      name: 'Jovani D6018 - Strapless, Sequin Prom Gown',
-      brand: 'Jovani',
-      sku: 'D6018',
-      price: 990.00,
-      images: [
-        '/images/product-page-demo-img.png',
-        '/images/product-page-demo-img.png',
-        '/images/product-page-demo-img.png',
-        '/images/product-page-demo-img.png'
-      ],
-      colors: ['ivory'],
-      sizes: ['36', '38'],
-      stock: 4,
-      description: "Flourish a stunning magnificence befitting a goddess in this Sydney's Closet Bridal SC5276 creation. Fashioned with feminine lace on the bodice and long sleeves, this gown parades a deep v-neckline with a full back. Accented with a peaked empire design, the chiffon skirt gracefully floats down the aisle with its sumptuous train. Fall in love with the romance of this Sydney's Closet Bridal masterpiece. The collection of bridal outfits from Sydney's Closet is appreciated for its elegance and sophisticated charm specifically tailored to ensure perfect and comfortable fit to a real curvy body. Model is wearing the Ivory color.",
-      details: {
-        style: 'sydneysic_SC5276',
-        fabric: 'Satin',
-        details: 'Long Sleeves, Chiffon Skirt, Full Back, Zipper Closure, Sweep Train',
-        length: 'Long',
-        neckline: 'Low V-Neck',
-        waistline: 'Empire',
-        silhouette: 'A-Line'
+    window.scrollTo(0, 0);
+  }, [productId]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        console.log('Fetching product with ID:', productId);
+        
+        // Fetch product from Firebase
+        const item = await getItemById(productId);
+        
+        if (!item) {
+          setError('Product not found');
+          return;
+        }
+        
+        // Convert ItemModel to product format expected by ProductPage
+        const productData = {
+          id: item.id,
+          name: item.name,
+          brand: item.brand || 'Hola Fashion',
+          sku: item.id,
+          price: item.price,
+          originalPrice: item.originalPrice,
+          images: item.images && item.images.length > 0 ? item.images : [
+            'https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg'
+          ],
+          colors: item.colors || ['ivory'],
+          sizes: item.sizes || ['S', 'M', 'L'],
+          stock: item.stock || 0,
+          description: item.description || 'Beautiful dress perfect for your special occasion.',
+          category: item.category,
+          headerCategory: item.headerCategory,
+          subHeaderCategory: item.subHeaderCategory,
+          details: {
+            style: item.id,
+            fabric: item.fabric || 'Premium Fabric',
+            details: item.details || 'Elegant design with premium craftsmanship',
+            length: item.length || 'Long',
+            neckline: item.neckline || 'Classic',
+            waistline: item.waistline || 'Natural',
+            silhouette: item.silhouette || 'A-Line'
+          }
+        };
+        
+        setProduct(productData);
+        
+        // Set default color if available
+        if (productData.colors && productData.colors.length > 0) {
+          setSelectedColor(productData.colors[0]);
+        }
+        
+        console.log('Product data loaded:', productData);
+        
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        setError('Failed to load product. Please try again.');
+      } finally {
+        setLoading(false);
       }
     };
-
-    // No need for setTimeout, load data immediately
-    setProduct(mockProduct);
-    setLoading(false);
     
-    // Debug log to confirm data is loaded
-    console.log('Product data loaded:', mockProduct);
+    if (productId) {
+      fetchProduct();
+    }
   }, [productId]);
 
   const handleSizeSelect = (size) => {
@@ -88,11 +121,61 @@ const ProductPage = () => {
   };
 
   if (loading) {
-    return <div className="loading">Loading product details...</div>;
+    return (
+      <div className="product-page">
+        <div className="loading-container" style={{ textAlign: 'center', padding: '4rem 0' }}>
+          <div className="loading-spinner" style={{ 
+            width: '50px', 
+            height: '50px', 
+            border: '4px solid #f3f3f3', 
+            borderTop: '4px solid #007bff', 
+            borderRadius: '50%', 
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }}></div>
+          <p>Loading product details...</p>
+        </div>
+      </div>
+    );
   }
 
-  if (!product) {
-    return <div className="error">Product not found</div>;
+  if (error || !product) {
+    return (
+      <div className="product-page">
+        <div className="error-container" style={{ textAlign: 'center', padding: '4rem 0' }}>
+          <p style={{ color: '#dc3545', fontSize: '1.1rem', marginBottom: '1rem' }}>
+            {error || 'Product not found'}
+          </p>
+          <button 
+            onClick={() => window.history.back()} 
+            style={{ 
+              padding: '0.75rem 2rem', 
+              background: '#007bff', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '6px', 
+              cursor: 'pointer',
+              marginRight: '1rem'
+            }}
+          >
+            Go Back
+          </button>
+          <button 
+            onClick={() => window.location.reload()} 
+            style={{ 
+              padding: '0.75rem 2rem', 
+              background: '#6c757d', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '6px', 
+              cursor: 'pointer' 
+            }}
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (

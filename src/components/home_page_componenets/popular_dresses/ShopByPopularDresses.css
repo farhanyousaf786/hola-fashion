@@ -1,7 +1,6 @@
 .popular-dresses-section {
   padding: 40px 0;
   background-color: #fff;
-  
 }
 
 .section-title {
@@ -10,7 +9,6 @@
   margin-bottom: 30px;
   font-weight: 500;
   font-family: 'Playfair Display', serif;
-  
 }
 
 .popular-dresses-grid {
@@ -18,6 +16,17 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   padding: 0 20px;
+}
+
+.dress-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.dress-card-link:hover {
+  transform: translateY(-5px);
 }
 
 .dress-card {
@@ -43,44 +52,55 @@
   object-fit: cover;
 }
 
-.dress-details {
-  padding: 10px 0;
-}
-
-.color-options {
+.color-swatches-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 8px;
+  margin: 10px 0;
+  text-align: center;
 }
 
-.color-dot {
-  width: 16px;
-  height: 16px;
+.color-swatches {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.color-swatch {
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  margin-right: 5px;
   border: 1px solid #ddd;
+  display: inline-block;
 }
 
-.color-dot.pink {
+.color-swatch.pink {
   background-color: #ffb6c1;
 }
 
-.color-dot.black {
+.color-swatch.black {
   background-color: #333;
 }
 
-.color-dot.gold {
+.color-swatch.gold {
   background-color: #d4af37;
 }
 
-.color-dot.olive {
+.color-swatch.olive {
   background-color: #808000;
 }
 
-.plus-sizes {
-  font-size: 12px;
+.plus-size {
+  font-size: 14px;
   color: #666;
-  margin-left: 5px;
+  margin-top: 5px;
+}
+
+.dress-info {
+  text-align: center;
+  padding: 5px 0;
 }
 
 .dress-name {

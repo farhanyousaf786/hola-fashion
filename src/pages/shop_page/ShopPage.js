@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import './ShopPage.css';
 import FilterSidebar from '../../components/shop_page_components/filter_sidebar/FilterSidebar';
 import ProductGrid from '../../components/shop_page_components/product_grid/ProductGrid';
 import MobileFilters from '../../components/shop_page_components/mobile_filters/MobileFilters';
 import MobileSortBy from '../../components/shop_page_components/mobile_sort_by/MobileSortBy';
 import Pagination from '../../components/shop_page_components/pagination/Pagination';
+import { getItemsByHeaderCategory, getAllItems } from '../../firebase/services/itemService';
 
-const ShopPage = () => {
+const ShopPage = ({ category }) => {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showMobileSortBy, setShowMobileSortBy] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({
@@ -18,23 +20,73 @@ const ShopPage = () => {
   });
   const [sortBy, setSortBy] = useState('FEATURED ITEMS');
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 260; // Mock total pages
+  const [totalPages, setTotalPages] = useState(1);
+  
+  const location = useLocation();
+  const params = useParams();
 
-  // Mock product data
-  const mockProducts = Array(12).fill().map((_, index) => ({
-    id: index + 1,
-    name: 'Jovani D6018 - Strapless, Sequin Prom Gown',
-    price: 990.00,
-    image: '/images/product-page-demo-img.png',
-    colors: ['pink', 'navy', 'red', 'white'],
-    isWishlist: false
-  }));
-
+  // Scroll to top when page loads or category changes
   useEffect(() => {
-    setProducts(mockProducts);
-  }, [mockProducts]);
+    window.scrollTo(0, 0);
+  }, [category, params.category, location.pathname]);
+
+  // Fetch products from Firebase
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Get category from props, URL params, or location pathname
+        const currentCategory = category || params.category || location.pathname.slice(1);
+        
+        let items = [];
+        
+        if (currentCategory && currentCategory !== 'shop' && currentCategory !== 'account' && currentCategory !== 'wishlist' && currentCategory !== 'cart') {
+          // Fetch items by header category
+          items = await getItemsByHeaderCategory(currentCategory);
+        } else {
+          // Fetch all items for general shop page
+          items = await getAllItems();
+        }
+        
+        // Convert ItemModel instances to product format expected by ProductGrid
+        const formattedProducts = items.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          originalPrice: item.originalPrice,
+          image: item.images && item.images.length > 0 ? item.images[0] : 'https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg',
+          colors: item.colors || [],
+          isWishlist: false,
+          brand: item.brand,
+          category: item.category,
+          headerCategory: item.headerCategory,
+          subHeaderCategory: item.subHeaderCategory,
+          featured: item.featured,
+          stock: item.stock
+        }));
+        
+        setProducts(formattedProducts);
+        
+        // Calculate pagination
+        const itemsPerPage = 12;
+        setTotalPages(Math.ceil(formattedProducts.length / itemsPerPage));
+        
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError('Failed to load products. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchProducts();
+  }, [category, params.category, location.pathname]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -79,15 +131,91 @@ const ShopPage = () => {
     window.scrollTo(0, 0);
   };
 
-  const totalProducts = 1020; // Mock total products count
+  // Get current category from props, URL params, or location pathname
+  const currentCategory = category || params.category || location.pathname.slice(1) || 'shop';
+  
+  // Format category for display (capitalize, replace hyphens with spaces)
+  const formatCategory = (cat) => {
+    return cat
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+  
+  const displayCategory = formatCategory(currentCategory);
+  const totalProducts = products.length;
+  
+  // Special handling for certain categories
+  const getCategoryTitle = () => {
+    if (currentCategory === 'account') return 'My Account';
+    if (currentCategory === 'wishlist') return 'My Wishlist';
+    if (currentCategory === 'cart') return 'Shopping Cart';
+    return `${displayCategory} Dresses`;
+  };
+  
+  // Loading state
+  if (loading) {
+    return (
+      <div className="shop-page">
+        <div className="shop-header">
+          <div className="breadcrumb">
+            <a href="/">Home</a> &gt; <a href="/dresses">Dresses</a> &gt; <span>{displayCategory}</span>
+          </div>
+          <h1 className="page-title">{getCategoryTitle()}</h1>
+        </div>
+        <div className="loading-container" style={{ textAlign: 'center', padding: '4rem 0' }}>
+          <div className="loading-spinner" style={{ 
+            width: '50px', 
+            height: '50px', 
+            border: '4px solid #f3f3f3', 
+            borderTop: '4px solid #007bff', 
+            borderRadius: '50%', 
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }}></div>
+          <p>Loading products...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="shop-page">
+        <div className="shop-header">
+          <div className="breadcrumb">
+            <a href="/">Home</a> &gt; <a href="/dresses">Dresses</a> &gt; <span>{displayCategory}</span>
+          </div>
+          <h1 className="page-title">{getCategoryTitle()}</h1>
+        </div>
+        <div className="error-container" style={{ textAlign: 'center', padding: '4rem 0' }}>
+          <p style={{ color: '#dc3545', fontSize: '1.1rem', marginBottom: '1rem' }}>{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            style={{ 
+              padding: '0.75rem 2rem', 
+              background: '#007bff', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '6px', 
+              cursor: 'pointer' 
+            }}
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="shop-page">
       <div className="shop-header">
         <div className="breadcrumb">
-          <a href="/">Home</a> &gt; <a href="/dresses">Dresses</a> &gt; <span>Wedding</span>
+          <a href="/">Home</a> &gt; <a href="/dresses">Dresses</a> &gt; <span>{displayCategory}</span>
         </div>
-        <h1 className="page-title">Wedding Dresses</h1>
+        <h1 className="page-title">{getCategoryTitle()}</h1>
       </div>
 
       <div className="shop-content">

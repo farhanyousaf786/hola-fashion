@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './ShopByPopularDresses.css';
 
 const ShopByPopularDresses = () => {
@@ -42,25 +43,27 @@ const ShopByPopularDresses = () => {
       <h2 className="section-title">Shop By Popular Dresses</h2>
       <div className="popular-dresses-grid">
         {popularDresses.map(dress => (
-          <div key={dress.id} className="dress-card">
-            <div className="dress-image-container">
-              <img src={dress.image} alt={dress.name} className="dress-image" />
-            </div>
-            <div className="dress-details">
-              <div className="color-options">
-                {dress.colors.map((color, index) => (
-                  <span 
-                    key={index} 
-                    className={`color-dot ${color}`} 
-                    aria-label={`${color} color option`}
-                  ></span>
-                ))}
-                <span className="plus-sizes">+{dress.plusSizes}</span>
+          <Link key={dress.id} to={`/product/${dress.id}`} className="dress-card-link">
+            <div className="dress-card">
+              <div className="dress-image-container">
+                <img src={dress.image} alt={dress.name} className="dress-image" />
               </div>
-              <h3 className="dress-name">{dress.name}</h3>
-              <p className="dress-price">{dress.price}</p>
+              <div className="color-swatches-container">
+                <div className="color-swatches">
+                  {dress.colors.map((color, index) => (
+                    <div key={index} className={`color-swatch ${color}`}></div>
+                  ))}
+                </div>
+                <div className="plus-size">
+                  +{dress.plusSizes}
+                </div>
+              </div>
+              <div className="dress-info">
+                <h3 className="dress-name">{dress.name}</h3>
+                <p className="dress-price">{dress.price}</p>
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
       <div className="view-more-container">

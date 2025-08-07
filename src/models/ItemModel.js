@@ -1,0 +1,241 @@
+// Item model for clothing products
+export class ItemModel {
+  constructor({
+    id = null,
+    name = '',
+    description = '',
+    price = 0,
+    discountPrice = 0,
+    gender = '', // 'men', 'women', 'unisex'
+    category = '',
+    subCategory = '',
+    headerCategory = '', // Main header navigation category
+    subHeaderCategory = '', // Sub-header navigation category
+    sizes = [],
+    colors = [],
+    images = [],
+    mainImage = '',
+    stock = 0,
+    featured = false,
+    tags = [],
+    brand = '',
+    material = '',
+    createdAt = new Date(),
+    updatedAt = new Date()
+  }) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.price = price;
+    this.discountPrice = discountPrice;
+    this.gender = gender;
+    this.category = category;
+    this.subCategory = subCategory;
+    this.headerCategory = headerCategory;
+    this.subHeaderCategory = subHeaderCategory;
+    this.sizes = sizes;
+    this.colors = colors;
+    this.images = images;
+    this.mainImage = mainImage;
+    this.stock = stock;
+    this.featured = featured;
+    this.tags = tags;
+    this.brand = brand;
+    this.material = material;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+  }
+
+  // Helper method to convert to Firebase format
+  toFirebase() {
+    return {
+      name: this.name,
+      description: this.description,
+      price: this.price,
+      discountPrice: this.discountPrice,
+      gender: this.gender,
+      category: this.category,
+      subCategory: this.subCategory,
+      headerCategory: this.headerCategory,
+      subHeaderCategory: this.subHeaderCategory,
+      sizes: this.sizes,
+      colors: this.colors,
+      images: this.images,
+      mainImage: this.mainImage,
+      stock: this.stock,
+      featured: this.featured,
+      tags: this.tags,
+      brand: this.brand,
+      material: this.material,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt
+    };
+  }
+
+  // Helper method to create from Firebase data
+  static fromFirebase(id, data) {
+    return new ItemModel({
+      id,
+      ...data,
+      createdAt: data.createdAt?.toDate() || new Date(),
+      updatedAt: data.updatedAt?.toDate() || new Date()
+    });
+  }
+
+  // Helper method to get formatted price
+  getFormattedPrice() {
+    return `$${this.price.toFixed(2)}`;
+  }
+
+  // Helper method to get formatted discount price
+  getFormattedDiscountPrice() {
+    return this.discountPrice > 0 ? `$${this.discountPrice.toFixed(2)}` : null;
+  }
+
+  // Helper method to check if item is on sale
+  isOnSale() {
+    return this.discountPrice > 0 && this.discountPrice < this.price;
+  }
+
+  // Helper method to get discount percentage
+  getDiscountPercentage() {
+    if (!this.isOnSale()) return 0;
+    return Math.round(((this.price - this.discountPrice) / this.price) * 100);
+  }
+
+  // Helper method to get main image with fallback
+  getMainImage() {
+    return this.mainImage || this.images[0] || 'https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg';
+  }
+
+  // Helper method to check if item is in stock
+  isInStock() {
+    return this.stock > 0;
+  }
+
+  // Helper method to get availability status
+  getAvailabilityStatus() {
+    if (this.stock === 0) return 'Out of Stock';
+    if (this.stock <= 5) return 'Low Stock';
+    return 'In Stock';
+  }
+}
+
+// Predefined categories for clothing items
+export const ITEM_CATEGORIES = {
+  MEN: [
+    { value: 'shirts', label: 'Shirts' },
+    { value: 't-shirts', label: 'T-Shirts' },
+    { value: 'jeans', label: 'Jeans' },
+    { value: 'pants', label: 'Pants' },
+    { value: 'suits', label: 'Suits' },
+    { value: 'jackets', label: 'Jackets' },
+    { value: 'sweaters', label: 'Sweaters' },
+    { value: 'hoodies', label: 'Hoodies' },
+    { value: 'underwear', label: 'Underwear' },
+    { value: 'socks', label: 'Socks' },
+    { value: 'shoes', label: 'Shoes' },
+    { value: 'accessories', label: 'Accessories' }
+  ],
+  WOMEN: [
+    { value: 'prom-dresses', label: 'Prom Dresses' },
+    { value: 'homecoming-dresses', label: 'Homecoming Dresses' },
+    { value: 'evening-gowns', label: 'Evening Gowns' },
+    { value: 'cocktail-dresses', label: 'Cocktail Dresses' },
+    { value: 'formal-gowns-sale', label: 'Formal Gowns on Sale' },
+    { value: 'wedding-guest-dresses', label: 'Wedding Guest Dresses' },
+    { value: 'plus-size-dresses', label: 'Plus Size Dresses' },
+    { value: 'mother-bride-dresses', label: 'Mother of the Bride Dresses' },
+    { value: 'bridesmaid-dresses', label: 'Bridesmaid Dresses' },
+    { value: 'quinceanera-dresses', label: 'Quinceanera Dresses' }
+  ],
+  UNISEX: [
+    { value: 't-shirts', label: 'T-Shirts' },
+    { value: 'hoodies', label: 'Hoodies' },
+    { value: 'sweaters', label: 'Sweaters' },
+    { value: 'jackets', label: 'Jackets' },
+    { value: 'accessories', label: 'Accessories' },
+    { value: 'shoes', label: 'Shoes' }
+  ]
+};
+
+// Header navigation categories based on website navigation
+export const HEADER_CATEGORIES = [
+  { value: 'prom', label: 'PROM' },
+  { value: 'hoco', label: 'HOCO' },
+  { value: 'wedding', label: 'WEDDING' },
+  { value: 'wedding-guest', label: 'WEDDING GUEST' },
+  { value: 'bridesmaid', label: 'BRIDESMAID' },
+  { value: 'mother-of-bride', label: 'MOTHER OF BRIDE' },
+  { value: 'quince', label: 'QUINCE' },
+  { value: 'formal', label: 'FORMAL' },
+  { value: 'others', label: 'OTHERS' }
+];
+
+// Sub-header categories for each main header category
+export const SUB_HEADER_CATEGORIES = {
+  'prom': [
+    { value: 'long-prom', label: 'Long Prom Dresses' },
+    { value: 'short-prom', label: 'Short Prom Dresses' },
+    { value: 'plus-size-prom', label: 'Plus Size Prom' }
+  ],
+  'hoco': [
+    { value: 'short-hoco', label: 'Short Homecoming' },
+    { value: 'long-hoco', label: 'Long Homecoming' },
+    { value: 'plus-size-hoco', label: 'Plus Size Homecoming' }
+  ],
+  'wedding': [
+    { value: 'wedding-dresses', label: 'Wedding Dresses' },
+    { value: 'wedding-accessories', label: 'Wedding Accessories' }
+  ],
+  'wedding-guest': [
+    { value: 'guest-dresses', label: 'Guest Dresses' },
+    { value: 'guest-accessories', label: 'Guest Accessories' }
+  ],
+  'bridesmaid': [
+    { value: 'bridesmaid-dresses', label: 'Bridesmaid Dresses' },
+    { value: 'bridesmaid-accessories', label: 'Bridesmaid Accessories' }
+  ],
+  'mother-of-bride': [
+    { value: 'mother-dresses', label: 'Mother Dresses' },
+    { value: 'mother-accessories', label: 'Mother Accessories' }
+  ],
+  'quince': [
+    { value: 'quince-dresses', label: 'Quinceanera Dresses' },
+    { value: 'quince-accessories', label: 'Quinceanera Accessories' }
+  ],
+  'formal': [
+    { value: 'evening-gowns', label: 'Evening Gowns' },
+    { value: 'cocktail-dresses', label: 'Cocktail Dresses' }
+  ],
+  'others': [
+    { value: 'accessories', label: 'Accessories' },
+    { value: 'shoes', label: 'Shoes' },
+    { value: 'jewelry', label: 'Jewelry' }
+  ]
+};
+
+// Common sizes for clothing
+export const COMMON_SIZES = {
+  LETTER: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
+  NUMERIC: ['30', '32', '34', '36', '38', '40', '42', '44', '46', '48', '50'],
+  SHOES_EU: ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46'],
+  SHOES_US: ['5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5', '11', '11.5', '12']
+};
+
+// Common colors for clothing
+export const COMMON_COLORS = [
+  { name: 'Black', hex: '#000000' },
+  { name: 'White', hex: '#FFFFFF' },
+  { name: 'Red', hex: '#FF0000' },
+  { name: 'Blue', hex: '#0000FF' },
+  { name: 'Green', hex: '#008000' },
+  { name: 'Yellow', hex: '#FFFF00' },
+  { name: 'Purple', hex: '#800080' },
+  { name: 'Pink', hex: '#FFC0CB' },
+  { name: 'Orange', hex: '#FFA500' },
+  { name: 'Brown', hex: '#A52A2A' },
+  { name: 'Gray', hex: '#808080' },
+  { name: 'Navy', hex: '#000080' },
+  { name: 'Beige', hex: '#F5F5DC' }
+];

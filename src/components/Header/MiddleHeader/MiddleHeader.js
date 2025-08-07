@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './MiddleHeader.css';
 
 const MiddleHeader = () => {
@@ -13,7 +14,9 @@ const MiddleHeader = () => {
       </div>
       
       <div className="logo-container">
-        <h1 className="site-logo">Hola Fashion</h1>
+        <Link to="/" className="logo-link">
+          <h1 className="site-logo">Hola Fashion</h1>
+        </Link>
       </div>
       
       <div className="search-container">
