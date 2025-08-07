@@ -28,7 +28,7 @@ const FeaturedIn = () => {
         ))}
       </div>
       <div className="shop-latest">
-        <h3 className="shop-latest-title">SHOP THE LATEST DRESSES AT HOLA FASHION!</h3>
+        <h3 className="shop-latest-title">SHOP THE LATEST DRESSES AT Rallina!</h3>
         <p className="shop-latest-text">
           Couture Candy presents you with a curated collection of high-end fashion pieces by famous designers to ignite your fashionista. Our range includes everything from prom dresses to mother of the bride dresses, homecoming, and bridesmaid dresses.
         </p>

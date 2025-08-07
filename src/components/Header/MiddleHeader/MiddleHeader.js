@@ -15,7 +15,7 @@ const MiddleHeader = () => {
       
       <div className="logo-container">
         <Link to="/" className="logo-link">
-          <h1 className="site-logo">Hola Fashion</h1>
+          <h1 className="site-logo">Rallina</h1>
         </Link>
       </div>
       

@@ -114,7 +114,7 @@ const Footer = () => {
       </div>
 
       <div className="footer-copyright">
-        <p>Copyright © 2025 Designed and Developed By Hola Fashion.</p>
+        <p>Copyright © 2025 Designed and Developed By Rallina.</p>
         <div className="payment-methods">
           <img src="/images/demo-image.png" alt="Visa" className="payment-icon" />
           <img src="/images/demo-image.png" alt="American Express" className="payment-icon" />

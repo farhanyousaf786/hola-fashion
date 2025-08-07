@@ -38,7 +38,7 @@ const ProductPage = () => {
         const productData = {
           id: item.id,
           name: item.name,
-          brand: item.brand || 'Hola Fashion',
+          brand: item.brand || 'Rallina',
           sku: item.id,
           price: item.price,
           originalPrice: item.originalPrice,
