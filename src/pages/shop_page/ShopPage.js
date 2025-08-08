@@ -25,9 +25,70 @@ const ShopPage = ({ category }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [dynamicFilters, setDynamicFilters] = useState({
+    sizes: [],
+    colors: [],
+    brands: [],
+    categories: [],
+    priceRanges: []
+  });
   
   const location = useLocation();
   const params = useParams();
+
+  // Function to extract dynamic filter data from products
+  const extractDynamicFilters = (products) => {
+    const sizes = new Set();
+    const colors = new Set();
+    const brands = new Set();
+    const categories = new Set();
+    const prices = [];
+
+    products.forEach(product => {
+      // Extract sizes
+      if (product.sizes && Array.isArray(product.sizes)) {
+        product.sizes.forEach(size => sizes.add(size));
+      }
+
+      // Extract colors
+      if (product.colors && Array.isArray(product.colors)) {
+        product.colors.forEach(color => colors.add(color));
+      }
+
+      // Extract brands
+      if (product.brand) {
+        brands.add(product.brand);
+      }
+
+      // Extract categories
+      if (product.category) {
+        categories.add(product.category);
+      }
+
+      // Collect prices for price range calculation
+      if (product.price) {
+        prices.push(product.price);
+      }
+    });
+
+    // Fixed price ranges
+    const priceRanges = [
+      { id: 'under-100', label: 'UNDER $100', min: 0, max: 99 },
+      { id: '100-200', label: '$100 - $200', min: 100, max: 200 },
+      { id: '200-300', label: '$200 - $300', min: 200, max: 300 },
+      { id: '300-400', label: '$300 - $400', min: 300, max: 400 },
+      { id: '400-500', label: '$400 - $500', min: 400, max: 500 },
+      { id: 'above-500', label: 'ABOVE $500', min: 500, max: Infinity }
+    ];
+
+    return {
+      sizes: Array.from(sizes).sort(),
+      colors: Array.from(colors).sort(),
+      brands: Array.from(brands).sort(),
+      categories: Array.from(categories).sort(),
+      priceRanges
+    };
+  };
 
   // Scroll to top when page loads or category changes
   useEffect(() => {
@@ -72,6 +133,10 @@ const ShopPage = ({ category }) => {
         }));
         
         setProducts(formattedProducts);
+        
+        // Extract and set dynamic filters
+        const filters = extractDynamicFilters(formattedProducts);
+        setDynamicFilters(filters);
         
         // Calculate pagination
         const itemsPerPage = 12;
@@ -121,6 +186,76 @@ const ShopPage = ({ category }) => {
     });
   };
 
+  // Filter products based on selected filters
+  const getFilteredProducts = () => {
+    let filtered = [...products];
+
+    // Filter by size
+    if (selectedFilters.size.length > 0) {
+      filtered = filtered.filter(product => 
+        product.sizes && product.sizes.some(size => 
+          selectedFilters.size.includes(size.toLowerCase())
+        )
+      );
+    }
+
+    // Filter by color
+    if (selectedFilters.color.length > 0) {
+      filtered = filtered.filter(product => 
+        product.colors && product.colors.some(color => 
+          selectedFilters.color.includes(color.toLowerCase())
+        )
+      );
+    }
+
+    // Filter by designer/brand
+    if (selectedFilters.designer.length > 0) {
+      filtered = filtered.filter(product => 
+        product.brand && selectedFilters.designer.includes(
+          product.brand.toLowerCase().replace(/\s+/g, '-')
+        )
+      );
+    }
+
+    // Filter by price range
+    if (selectedFilters.priceRange.length > 0) {
+      console.log('Price filtering active. Selected ranges:', selectedFilters.priceRange);
+      console.log('Sample product prices:', filtered.slice(0, 3).map(p => ({ name: p.name, price: p.price, type: typeof p.price })));
+      
+      filtered = filtered.filter(product => {
+        const price = parseFloat(product.price) || 0;
+        const matches = selectedFilters.priceRange.some(rangeId => {
+          switch (rangeId) {
+            case 'under-100':
+              return price < 100;
+            case '100-200':
+              return price >= 100 && price <= 200;
+            case '200-300':
+              return price >= 200 && price <= 300;
+            case '300-400':
+              return price >= 300 && price <= 400;
+            case '400-500':
+              return price >= 400 && price <= 500;
+            case 'above-500':
+              return price > 500;
+            default:
+              return true;
+          }
+        });
+        
+        if (matches) {
+          console.log(`Product "${product.name}" matches price filter. Price: ${price}`);
+        }
+        
+        return matches;
+      });
+      
+      console.log('Products after price filtering:', filtered.length);
+    }
+
+    return filtered;
+  };
+
   const handleSortChange = (sortOption) => {
     setSortBy(sortOption);
     if (showMobileSortBy) setShowMobileSortBy(false);
@@ -143,7 +278,8 @@ const ShopPage = ({ category }) => {
   };
   
   const displayCategory = formatCategory(currentCategory);
-  const totalProducts = products.length;
+  const filteredProducts = getFilteredProducts();
+  const totalProducts = filteredProducts.length;
   
   // Special handling for certain categories
   const getCategoryTitle = () => {
@@ -222,7 +358,8 @@ const ShopPage = ({ category }) => {
         {!isMobile && (
           <FilterSidebar 
             selectedFilters={selectedFilters} 
-            onFilterChange={handleFilterChange} 
+            onFilterChange={handleFilterChange}
+            dynamicFilters={dynamicFilters}
           />
         )}
 
@@ -261,7 +398,7 @@ const ShopPage = ({ category }) => {
             </div>
           )}
 
-          <ProductGrid products={products} />
+          <ProductGrid products={filteredProducts} />
           
           <Pagination 
             currentPage={currentPage}
@@ -275,6 +412,7 @@ const ShopPage = ({ category }) => {
               onFilterChange={handleFilterChange} 
               onClose={toggleMobileFilters}
               totalProducts={totalProducts}
+              dynamicFilters={dynamicFilters}
             />
           )}
 

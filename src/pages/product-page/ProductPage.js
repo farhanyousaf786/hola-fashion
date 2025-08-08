@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './ProductPage.css';
 import { getItemById } from '../../firebase/services/itemService';
+import { useCart } from '../../context/CartContext';
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -12,6 +13,8 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [addToCartMessage, setAddToCartMessage] = useState('');
+  const { addToCart, isInCart } = useCart();
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -102,17 +105,27 @@ const ProductPage = () => {
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      alert('Please select a size');
+      setAddToCartMessage('Please select a size');
+      setTimeout(() => setAddToCartMessage(''), 3000);
       return;
     }
     
-    console.log('Added to cart:', {
-      product: product.name,
-      size: selectedSize,
-      color: selectedColor,
-      quantity
-    });
-    // In a real app, this would dispatch to a cart state or API
+    try {
+      addToCart(product, selectedSize, selectedColor, quantity);
+      setAddToCartMessage(`Added ${quantity} item${quantity > 1 ? 's' : ''} to cart!`);
+      setTimeout(() => setAddToCartMessage(''), 3000);
+      
+      console.log('Added to cart:', {
+        product: product.name,
+        size: selectedSize,
+        color: selectedColor,
+        quantity
+      });
+    } catch (error) {
+      setAddToCartMessage('Error adding to cart. Please try again.');
+      setTimeout(() => setAddToCartMessage(''), 3000);
+      console.error('Error adding to cart:', error);
+    }
   };
 
   const handleAddToWishlist = () => {
@@ -277,6 +290,12 @@ const ProductPage = () => {
                 <img src="/icons/heart-icon.svg" alt="Add to Wishlist" />
               </button>
             </div>
+            
+            {addToCartMessage && (
+              <div className={`cart-message ${addToCartMessage.includes('Error') || addToCartMessage.includes('Please') ? 'error' : 'success'}`}>
+                {addToCartMessage}
+              </div>
+            )}
           </div>
           
           <div className="shipping-info">

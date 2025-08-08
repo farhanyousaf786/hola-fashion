@@ -8,6 +8,46 @@
   border-bottom: 1px solid #eee;
 }
 
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.account-link, .wishlist-link, .cart-link {
+  position: relative;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.action-icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s ease;
+}
+
+.action-icon:hover {
+  transform: scale(1.1);
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #E94949;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
+}
+
 .nav-menu {
   display: flex;
   list-style: none;

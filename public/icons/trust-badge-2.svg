@@ -1,0 +1,8 @@
+<svg width="80" height="40" viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="40" rx="4" fill="#2196F3"/>
+<circle cx="20" cy="20" r="8" stroke="white" stroke-width="2" fill="none"/>
+<path d="M16 20L19 23L24 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="32" y="14" font-family="Arial, sans-serif" font-size="6" fill="white" font-weight="bold">BBB</text>
+<text x="32" y="22" font-family="Arial, sans-serif" font-size="6" fill="white" font-weight="bold">ACCREDITED</text>
+<text x="32" y="30" font-family="Arial, sans-serif" font-size="6" fill="white" font-weight="bold">BUSINESS</text>
+</svg>

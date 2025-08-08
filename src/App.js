@@ -5,16 +5,19 @@ import Header from './components/Header/Header';
 import HomePage from './pages/home_page/HomePage';
 import ShopPage from './pages/shop_page/ShopPage';
 import ProductPage from './pages/product-page/ProductPage';
+import CartPage from './pages/cart_page/CartPage';
 import Footer from './components/footer/Footer';
+import { CartProvider } from './context/CartContext';
 
 
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Header />
-        <main>
+    <CartProvider>
+      <Router>
+        <div className="App">
+          <Header />
+          <main>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/shop" element={<ShopPage />} />
@@ -34,12 +37,13 @@ function App() {
             {/* Other pages */}
             <Route path="/account" element={<ShopPage category="account" />} />
             <Route path="/wishlist" element={<ShopPage category="wishlist" />} />
-            <Route path="/cart" element={<ShopPage category="cart" />} />
+            <Route path="/cart" element={<CartPage />} />
           </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </CartProvider>
   );
 }
 

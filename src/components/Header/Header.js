@@ -4,10 +4,12 @@ import './Header.css';
 import TopHeader from './TopHeader/TopHeader';
 import MiddleHeader from './MiddleHeader/MiddleHeader';
 import BottomHeader from './BottomHeader/BottomHeader';
+import { useCart } from '../../context/CartContext';
 
 const Header = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { getCartItemCount } = useCart();
 
   useEffect(() => {
     const handleResize = () => {
@@ -70,7 +72,9 @@ const Header = () => {
                 </a>
                 <a href="#cart" className="cart-link">
                   <img src="/icons/cart-icon.svg" alt="Cart" className="action-icon" />
-                  <span className="cart-count">1</span>
+                  {getCartItemCount() > 0 && (
+                    <span className="cart-count">{getCartItemCount()}</span>
+                  )}
                 </a>
               </div>
             </div>

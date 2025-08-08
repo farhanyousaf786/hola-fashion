@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './BottomHeader.css';
+import { useCart } from '../../../context/CartContext';
 
 const BottomHeader = () => {
+  const { getCartItemCount } = useCart();
+
   return (
     <nav className="bottom-header">
       <ul className="nav-menu">
@@ -43,6 +46,9 @@ const BottomHeader = () => {
         </Link>
         <Link to="/cart" className="cart-link">
           <img src="/icons/cart-icon.svg" alt="Cart" className="action-icon" />
+          {getCartItemCount() > 0 && (
+            <span className="cart-count">{getCartItemCount()}</span>
+          )}
         </Link>
       </div>
     </nav>
