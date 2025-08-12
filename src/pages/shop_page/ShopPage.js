@@ -97,6 +97,20 @@ const ShopPage = ({ category }) => {
     window.scrollTo(0, 0);
   }, [category, params.category, location.pathname]);
 
+  // Handle URL parameters for color filtering
+  useEffect(() => {
+    const colorParam = searchParams.get('color');
+    const colorNameParam = searchParams.get('colorName');
+    
+    if (colorParam) {
+      // Apply color filter when color parameter is present in URL
+      setSelectedFilters(prevFilters => ({
+        ...prevFilters,
+        color: [colorParam]
+      }));
+    }
+  }, [searchParams]);
+
   // Fetch products from Firebase
   useEffect(() => {
     const fetchProducts = async () => {
@@ -266,6 +280,54 @@ const ShopPage = ({ category }) => {
     if (showMobileSortBy) setShowMobileSortBy(false);
   };
 
+  // Dynamic sorting function
+  const sortProducts = (products, sortOption) => {
+    const sortedProducts = [...products];
+    
+    switch (sortOption) {
+      case 'BEST SELLING':
+        // Sort by sales count (assuming higher sales = better selling)
+        return sortedProducts.sort((a, b) => (b.salesCount || 0) - (a.salesCount || 0));
+      
+      case 'FEATURED ITEMS':
+        // Sort by featured flag first, then by creation date
+        return sortedProducts.sort((a, b) => {
+          if (a.featured && !b.featured) return -1;
+          if (!a.featured && b.featured) return 1;
+          return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        });
+      
+      case 'PRICE (LOW TO HIGH)':
+        return sortedProducts.sort((a, b) => {
+          const priceA = a.discountPrice || a.price || 0;
+          const priceB = b.discountPrice || b.price || 0;
+          return priceA - priceB;
+        });
+      
+      case 'PRICE (HIGH TO LOW)':
+        return sortedProducts.sort((a, b) => {
+          const priceA = a.discountPrice || a.price || 0;
+          const priceB = b.discountPrice || b.price || 0;
+          return priceB - priceA;
+        });
+      
+      case 'NAME (A-Z)':
+        return sortedProducts.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+      
+      case 'NAME (Z-A)':
+        return sortedProducts.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
+      
+      case 'DATE: OLD TO NEW':
+        return sortedProducts.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+      
+      case 'DATE: NEW TO OLD':
+        return sortedProducts.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      
+      default:
+        return sortedProducts;
+    }
+  };
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo(0, 0);
@@ -283,14 +345,22 @@ const ShopPage = ({ category }) => {
   };
   
   const displayCategory = formatCategory(currentCategory);
-  const filteredProducts = getFilteredProducts();
+  const filteredProducts = sortProducts(getFilteredProducts(), sortBy);
   const totalProducts = filteredProducts.length;
   
   // Special handling for certain categories
   const getCategoryTitle = () => {
+    const colorNameParam = searchParams.get('colorName');
+    
     if (currentCategory === 'account') return 'My Account';
     if (currentCategory === 'wishlist') return 'My Wishlist';
     if (currentCategory === 'cart') return 'Shopping Cart';
+    
+    // If color filtering is active, show color-specific title
+    if (colorNameParam) {
+      return colorNameParam;
+    }
+    
     return `${displayCategory} Dresses`;
   };
   
