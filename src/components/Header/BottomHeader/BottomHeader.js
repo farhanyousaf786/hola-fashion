@@ -1,10 +1,29 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './BottomHeader.css';
 import { useCart } from '../../../context/CartContext';
+import { useAuth } from '../../../context/AuthContext';
+import { useWishlist } from '../../../context/WishlistContext';
 
 const BottomHeader = () => {
   const { getCartItemCount } = useCart();
+  const { isAuthenticated } = useAuth();
+  const { getWishlistCount } = useWishlist();
+  const navigate = useNavigate();
+
+  const handleWishlistClick = (e) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      navigate('/auth?from=wishlist&action=favorite');
+    }
+  };
+
+  const handleProfileClick = (e) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      navigate('/auth?from=profile');
+    }
+  };
 
   return (
     <nav className="bottom-header">
@@ -38,11 +57,14 @@ const BottomHeader = () => {
         </li>
       </ul>
       <div className="user-actions">
-        <Link to="/account" className="account-link">
+        <Link to="/profile" className="account-link" onClick={handleProfileClick}>
           <img src="/icons/profile-icon.svg" alt="Profile" className="action-icon" />
         </Link>
-        <Link to="/wishlist" className="wishlist-link">
+        <Link to="/wishlist" className="wishlist-link" onClick={handleWishlistClick}>
           <img src="/icons/heart-icon.svg" alt="Wishlist" className="action-icon" />
+          {isAuthenticated && getWishlistCount() > 0 && (
+            <span className="wishlist-count">{getWishlistCount()}</span>
+          )}
         </Link>
         <Link to="/cart" className="cart-link">
           <img src="/icons/cart-icon.svg" alt="Cart" className="action-icon" />

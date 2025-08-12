@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useSearchParams } from 'react-router-dom';
 import './ShopPage.css';
 import FilterSidebar from '../../components/shop_page_components/filter_sidebar/FilterSidebar';
 import ProductGrid from '../../components/shop_page_components/product_grid/ProductGrid';
 import MobileFilters from '../../components/shop_page_components/mobile_filters/MobileFilters';
 import MobileSortBy from '../../components/shop_page_components/mobile_sort_by/MobileSortBy';
 import Pagination from '../../components/shop_page_components/pagination/Pagination';
-import { getItemsByHeaderCategory, getAllItems } from '../../firebase/services/itemService';
+import { getItemsByHeaderCategory, getAllItems, searchItems } from '../../firebase/services/itemService';
 
 const ShopPage = ({ category }) => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showMobileSortBy, setShowMobileSortBy] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({
@@ -107,7 +109,10 @@ const ShopPage = ({ category }) => {
         
         let items = [];
         
-        if (currentCategory && currentCategory !== 'shop' && currentCategory !== 'account' && currentCategory !== 'wishlist' && currentCategory !== 'cart') {
+        if (searchQuery) {
+          // Handle search query - search by product name, category, or description
+          items = await searchItems(searchQuery);
+        } else if (currentCategory && currentCategory !== 'shop' && currentCategory !== 'account' && currentCategory !== 'wishlist' && currentCategory !== 'cart') {
           // Fetch items by header category
           items = await getItemsByHeaderCategory(currentCategory);
         } else {
@@ -151,7 +156,7 @@ const ShopPage = ({ category }) => {
     };
     
     fetchProducts();
-  }, [category, params.category, location.pathname]);
+  }, [category, params.category, location.pathname, searchQuery]);
 
   useEffect(() => {
     const handleResize = () => {

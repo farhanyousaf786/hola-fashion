@@ -50,12 +50,14 @@ export const getFeaturedItems = async (limitCount = 8) => {
     const q = query(
       collection(db, ITEMS_COLLECTION),
       where('featured', '==', true),
-      orderBy('createdAt', 'desc'),
       limit(limitCount)
     );
     
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ItemModel.fromFirebase(doc.id, doc.data()));
+    const items = querySnapshot.docs.map(doc => ItemModel.fromFirebase(doc.id, doc.data()));
+    
+    // Sort by createdAt client-side (temporary fix until index is created)
+    return items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   } catch (error) {
     console.error('Error getting featured items:', error);
     throw error;

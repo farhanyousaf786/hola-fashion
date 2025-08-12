@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 import TopHeader from './TopHeader/TopHeader';
 import MiddleHeader from './MiddleHeader/MiddleHeader';
@@ -9,21 +9,60 @@ import { useCart } from '../../context/CartContext';
 const Header = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const { getCartItemCount } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
+    const handleClickOutside = (event) => {
+      if (mobileMenuOpen && !event.target.closest('.mobile-menu') && !event.target.closest('.hamburger-menu')) {
+        setMobileMenuOpen(false);
+      }
+      if (mobileSearchOpen && !event.target.closest('.mobile-search') && !event.target.closest('.search-link')) {
+        setMobileSearchOpen(false);
+      }
+    };
+
     window.addEventListener('resize', handleResize);
+    document.addEventListener('click', handleClickOutside);
+    
     return () => {
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('click', handleClickOutside);
     };
-  }, []);
+  }, [mobileMenuOpen, mobileSearchOpen]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+    setMobileSearchOpen(false); // Close search when menu opens
+  };
+
+  const toggleMobileSearch = () => {
+    setMobileSearchOpen(!mobileSearchOpen);
+    setMobileMenuOpen(false); // Close menu when search opens
+  };
+
+  const handleMobileSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchTerm.trim())}`);
+      setMobileSearchOpen(false);
+      setSearchTerm('');
+    }
+  };
+
+  const handleCartClick = () => {
+    navigate('/cart');
+  };
+
+  const handleMenuItemClick = (path) => {
+    navigate(path);
+    setMobileMenuOpen(false); // Close menu after navigation
   };
 
   return (
@@ -63,35 +102,66 @@ const Header = () => {
               </button>
               
               <div className="logo-container">
-                <h1 className="site-logo">HF</h1>
+                <Link to="/" className="logo-link">
+                  <h1 className="site-logo">K</h1>
+                </Link>
               </div>
               
               <div className="mobile-actions">
-                <a href="#search" className="search-link">
+                <button onClick={toggleMobileSearch} className="search-link">
                   <img src="/icons/search-icon.svg" alt="Search" className="action-icon" />
-                </a>
-                <a href="#cart" className="cart-link">
+                </button>
+                <button onClick={handleCartClick} className="cart-link">
                   <img src="/icons/cart-icon.svg" alt="Cart" className="action-icon" />
                   {getCartItemCount() > 0 && (
                     <span className="cart-count">{getCartItemCount()}</span>
                   )}
-                </a>
+                </button>
               </div>
             </div>
+            
+            {mobileSearchOpen && (
+              <div className="mobile-search">
+                <form onSubmit={handleMobileSearch} className="mobile-search-form">
+                  <input
+                    type="text"
+                    placeholder="Search products, categories..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="mobile-search-input"
+                    autoFocus
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                  />
+                  <button type="submit" className="mobile-search-submit">
+                    Search
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => setMobileSearchOpen(false)}
+                    className="mobile-search-close"
+                  >
+                    ×
+                  </button>
+                </form>
+              </div>
+            )}
             
             {mobileMenuOpen && (
               <div className="mobile-menu">
                 <div className="mobile-nav">
                   <ul className="mobile-nav-menu">
-                    <li><a href="#prom">PROM</a></li>
-                    <li><a href="#hoco">HOCO</a></li>
-                    <li><Link to="/wedding">WEDDING</Link></li>
-                    <li><a href="#wedding-guest">WEDDING GUEST</a></li>
-                    <li><a href="#bridesmaid">BRIDESMAID</a></li>
-                    <li><a href="#mother-of-bride">MOTHER OF BRIDE</a></li>
-                    <li><a href="#quince">QUINCE</a></li>
-                    <li><a href="#formal">FORMAL</a></li>
-                    <li><a href="#others">OTHERS</a></li>
+                    <li><button onClick={() => handleMenuItemClick('/prom')}>PROM</button></li>
+                    <li><button onClick={() => handleMenuItemClick('/hoco')}>HOCO</button></li>
+                    <li><button onClick={() => handleMenuItemClick('/wedding')}>WEDDING</button></li>
+                    <li><button onClick={() => handleMenuItemClick('/wedding-guest')}>WEDDING GUEST</button></li>
+                    <li><button onClick={() => handleMenuItemClick('/bridesmaid')}>BRIDESMAID</button></li>
+                    <li><button onClick={() => handleMenuItemClick('/mother-of-bride')}>MOTHER OF BRIDE</button></li>
+                    <li><button onClick={() => handleMenuItemClick('/quince')}>QUINCE</button></li>
+                    <li><button onClick={() => handleMenuItemClick('/formal')}>FORMAL</button></li>
+                    <li><button onClick={() => handleMenuItemClick('/others')}>OTHERS</button></li>
                   </ul>
                 </div>
               </div>

@@ -264,11 +264,26 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.wishlist-btn:hover {
+  border-color: #ff4d4d;
+}
+
+.wishlist-btn.active {
+  background: #ff4d4d;
+  border-color: #ff4d4d;
 }
 
 .wishlist-btn img {
   width: 24px;
   height: 24px;
+  transition: filter 0.3s ease;
+}
+
+.wishlist-btn.active img {
+  filter: brightness(0) invert(1); /* Makes the heart white when active */
 }
 
 .shipping-info {

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import './ProductPage.css';
 import { getItemById } from '../../firebase/services/itemService';
 import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
+import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -13,8 +16,11 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [addToCartMessage, setAddToCartMessage] = useState('');
   const { addToCart, isInCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { isAuthenticated } = useAuth();
+  const { showSuccess, showError } = useToast();
+  const navigate = useNavigate();
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -105,15 +111,13 @@ const ProductPage = () => {
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      setAddToCartMessage('Please select a size');
-      setTimeout(() => setAddToCartMessage(''), 3000);
+      showError('Please select a size');
       return;
     }
     
     try {
       addToCart(product, selectedSize, selectedColor, quantity);
-      setAddToCartMessage(`Added ${quantity} item${quantity > 1 ? 's' : ''} to cart!`);
-      setTimeout(() => setAddToCartMessage(''), 3000);
+      showSuccess(`Added ${quantity} item${quantity > 1 ? 's' : ''} to cart!`);
       
       console.log('Added to cart:', {
         product: product.name,
@@ -122,15 +126,20 @@ const ProductPage = () => {
         quantity
       });
     } catch (error) {
-      setAddToCartMessage('Error adding to cart. Please try again.');
-      setTimeout(() => setAddToCartMessage(''), 3000);
+      showError('Error adding to cart. Please try again.');
       console.error('Error adding to cart:', error);
     }
   };
 
   const handleAddToWishlist = () => {
-    console.log('Added to wishlist:', product.name);
-    // In a real app, this would dispatch to a wishlist state or API
+    if (!isAuthenticated) {
+      navigate('/auth?from=wishlist&action=favorite');
+      return;
+    }
+    
+    const wasAdded = toggleWishlist(product);
+    const message = wasAdded ? 'Added to wishlist!' : 'Removed from wishlist!';
+    showSuccess(message);
   };
 
   if (loading) {
@@ -286,16 +295,13 @@ const ProductPage = () => {
               <button className="add-to-cart-btn" onClick={handleAddToCart}>
                 ADD TO CART
               </button>
-              <button className="wishlist-btn" onClick={handleAddToWishlist}>
+              <button 
+                className={`wishlist-btn ${product && isInWishlist(product.id) ? 'active' : ''}`} 
+                onClick={handleAddToWishlist}
+              >
                 <img src="/icons/heart-icon.svg" alt="Add to Wishlist" />
               </button>
             </div>
-            
-            {addToCartMessage && (
-              <div className={`cart-message ${addToCartMessage.includes('Error') || addToCartMessage.includes('Please') ? 'error' : 'success'}`}>
-                {addToCartMessage}
-              </div>
-            )}
           </div>
           
           <div className="shipping-info">

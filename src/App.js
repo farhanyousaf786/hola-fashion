@@ -6,44 +6,58 @@ import HomePage from './pages/home_page/HomePage';
 import ShopPage from './pages/shop_page/ShopPage';
 import ProductPage from './pages/product-page/ProductPage';
 import CartPage from './pages/cart_page/CartPage';
+import AuthPage from './pages/auth/AuthPage';
+import ProfilePage from './pages/profile/ProfilePage';
+import WishlistPage from './pages/wishlist/WishlistPage';
 import Footer from './components/footer/Footer';
 import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
+import { WishlistProvider } from './context/WishlistContext';
+import { ToastProvider } from './context/ToastContext';
 
 
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <div className="App">
-          <Header />
-          <main>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/shop" element={<ShopPage />} />
-            <Route path="/product/:productId" element={<ProductPage />} />
-            
-            {/* Header Category Pages - using ShopPage */}
-            <Route path="/prom" element={<ShopPage />} />
-            <Route path="/hoco" element={<ShopPage />} />
-            <Route path="/wedding" element={<ShopPage />} />
-            <Route path="/wedding-guest" element={<ShopPage />} />
-            <Route path="/bridesmaid" element={<ShopPage />} />
-            <Route path="/mother-of-bride" element={<ShopPage />} />
-            <Route path="/quince" element={<ShopPage />} />
-            <Route path="/formal" element={<ShopPage />} />
-            <Route path="/others" element={<ShopPage />} />
-            
-            {/* Other pages */}
-            <Route path="/account" element={<ShopPage category="account" />} />
-            <Route path="/wishlist" element={<ShopPage category="wishlist" />} />
-            <Route path="/cart" element={<CartPage />} />
-          </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </CartProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <WishlistProvider>
+          <CartProvider>
+            <Router>
+          <div className="App">
+            <Header />
+            <main>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/shop" element={<ShopPage />} />
+              <Route path="/product/:productId" element={<ProductPage />} />
+              
+              {/* Header Category Pages - using ShopPage */}
+              <Route path="/prom" element={<ShopPage />} />
+              <Route path="/hoco" element={<ShopPage />} />
+              <Route path="/wedding" element={<ShopPage />} />
+              <Route path="/wedding-guest" element={<ShopPage />} />
+              <Route path="/bridesmaid" element={<ShopPage />} />
+              <Route path="/mother-of-bride" element={<ShopPage />} />
+              <Route path="/quince" element={<ShopPage />} />
+              <Route path="/formal" element={<ShopPage />} />
+              <Route path="/others" element={<ShopPage />} />
+              
+              {/* Auth and Other pages */}
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/account" element={<ShopPage category="account" />} />
+              <Route path="/wishlist" element={<WishlistPage />} />
+              <Route path="/cart" element={<CartPage />} />
+            </Routes>
+            </main>
+            <Footer />
+          </div>
+            </Router>
+          </CartProvider>
+        </WishlistProvider>
+      </AuthProvider>
+    </ToastProvider>
   );
 }
 

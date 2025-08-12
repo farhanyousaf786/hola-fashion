@@ -154,16 +154,62 @@
   }
   
   .popular-dresses-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
     padding: 0 15px;
   }
   
   .dress-image-container {
-    padding-bottom: 125%; /* Slightly shorter for mobile */
+    padding-bottom: 140%; /* Maintain good aspect ratio for smaller cards */
+    margin-bottom: 8px;
   }
   
-  .dress-details {
-    padding: 5px 0;
+  .dress-info {
+    padding: 3px 0;
+  }
+  
+  .dress-name {
+    font-size: 12px;
+    margin: 0 0 3px;
+    line-height: 1.2;
+  }
+  
+  .dress-price {
+    font-size: 12px;
+    margin: 0;
+  }
+  
+  .color-swatches-container {
+    margin: 6px 0;
+  }
+  
+  .color-swatch {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .plus-size {
+    font-size: 11px;
+    margin-top: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .popular-dresses-grid {
+    gap: 12px;
+    padding: 0 10px;
+  }
+  
+  .dress-name {
+    font-size: 11px;
+  }
+  
+  .dress-price {
+    font-size: 11px;
+  }
+  
+  .color-swatch {
+    width: 16px;
+    height: 16px;
   }
 }

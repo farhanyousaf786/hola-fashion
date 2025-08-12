@@ -47,3 +47,39 @@
   text-decoration: none;
   font-size: 14px;
 }
+
+/* Mobile Functionality Fixes */
+@media (max-width: 768px) {
+  .top-header {
+    padding: 8px 15px;
+    justify-content: center;
+  }
+  
+  .social-icons {
+    display: none; /* Hide on mobile to save space */
+  }
+  
+  .announcement {
+    flex-grow: 1;
+    text-align: center;
+  }
+  
+  .announcement p {
+    font-size: 12px;
+    margin: 0;
+  }
+  
+  .contact-info {
+    display: none; /* Hide on mobile to save space */
+  }
+}
+
+@media (max-width: 480px) {
+  .top-header {
+    padding: 6px 10px;
+  }
+  
+  .announcement p {
+    font-size: 11px;
+  }
+}

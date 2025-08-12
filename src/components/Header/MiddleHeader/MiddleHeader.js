@@ -1,8 +1,32 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './MiddleHeader.css';
 
 const MiddleHeader = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      // Navigate to shop page with search query
+      navigate(`/shop?search=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch(e);
+    }
+  };
+
+  // Prevent iOS zoom on input focus
+  const handleInputFocus = (e) => {
+    if (window.innerWidth <= 768) {
+      e.target.style.fontSize = '16px';
+    }
+  };
+
   return (
     <div className="middle-header">
       <div className="currency-selector">
@@ -19,10 +43,22 @@ const MiddleHeader = () => {
         </Link>
       </div>
       
-      <div className="search-container">
-        <input type="text" placeholder="Search" className="search-input" />
-        <button className="search-btn">SEARCH</button>
-      </div>
+      <form className="search-container" onSubmit={handleSearch}>
+        <input 
+          type="text" 
+          placeholder="Search products, categories..." 
+          className="search-input"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyPress={handleKeyPress}
+          onFocus={handleInputFocus}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck="false"
+        />
+        <button type="submit" className="search-btn">SEARCH</button>
+      </form>
     </div>
   );
 };

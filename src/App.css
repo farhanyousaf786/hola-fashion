@@ -24,15 +24,4 @@ img {
   height: auto;
 }
 
-/* For icons - you can replace with your preferred icon library */
-.icon-user:before {
-  content: '👤';
-}
-
-.icon-heart:before {
-  content: '❤️';
-}
-
-.icon-cart:before {
-  content: '🛒';
-}
+/* Icons are now handled by SVG files */

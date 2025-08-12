@@ -1,11 +1,25 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './ProductGrid.css';
+import { useWishlist } from '../../../context/WishlistContext';
+import { useAuth } from '../../../context/AuthContext';
+import { useToast } from '../../../context/ToastContext';
 
 const ProductGrid = ({ products }) => {
-  const toggleWishlist = (productId) => {
-    // This would typically update state or call an API
-    console.log(`Toggle wishlist for product ${productId}`);
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { isAuthenticated } = useAuth();
+  const { showSuccess } = useToast();
+  const navigate = useNavigate();
+
+  const handleWishlistToggle = (product) => {
+    if (!isAuthenticated) {
+      navigate('/auth?from=wishlist&action=favorite');
+      return;
+    }
+    
+    const wasAdded = toggleWishlist(product);
+    const message = wasAdded ? 'Added to wishlist!' : 'Removed from wishlist!';
+    showSuccess(message);
   };
 
   return (
@@ -15,15 +29,15 @@ const ProductGrid = ({ products }) => {
           <Link to={`/product/${product.id}`} className="product-link">
           <div className="product-image-container">
             <img src={product.image} alt={product.name} className="product-image" />
-            <button 
-              className={`wishlist-button ${product.isWishlist ? 'active' : ''}`}
+            <button
+              className={`wishlist-btn ${isInWishlist(product.id) ? 'active' : ''}`}
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                toggleWishlist(product.id);
+                handleWishlistToggle(product);
               }}
             >
-              {product.isWishlist ? '❤️' : '♡'}
+              <img src="/icons/heart-icon.svg" alt="Add to Wishlist" />
             </button>
           </div>
           </Link>
