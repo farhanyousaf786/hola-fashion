@@ -32,6 +32,16 @@
 .dress-card {
   display: flex;
   flex-direction: column;
+  background-color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.dress-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
 .dress-image-container {
@@ -40,7 +50,7 @@
   padding-bottom: 133%; /* 3:4 aspect ratio */
   overflow: hidden;
   margin-bottom: 10px;
-  border-radius: 4%;
+  border-radius: 16px 16px 0 0;
 }
 
 .dress-image {

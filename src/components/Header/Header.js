@@ -69,11 +69,6 @@ const Header = () => {
     <header className="site-header">
       {isMobile ? (
         <>
-          <div className="top-header">
-            <div className="announcement">
-              <p>AVOID UP TO 25% PRICE INCREASES NEXT MONTH - SHOP PRE-TARIFF DRESSES TODAY!</p>
-            </div>
-          </div>
           <div className="mobile-header">
             <div className="mobile-user-bar">
               <div className="currency-selector">
@@ -103,7 +98,7 @@ const Header = () => {
               
               <div className="logo-container">
                 <Link to="/" className="logo-link">
-                  <h1 className="site-logo">K</h1>
+                  <h1 className="site-logo">Rallina</h1>
                 </Link>
               </div>
               
@@ -170,7 +165,7 @@ const Header = () => {
         </>
       ) : (
         <>
-          <TopHeader />
+          {/* <TopHeader /> */}
           <MiddleHeader />
           <BottomHeader />
         </>
