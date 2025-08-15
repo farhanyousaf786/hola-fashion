@@ -18,16 +18,7 @@ const AuthPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check if user came from wishlist
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const from = params.get('from');
-    const action = params.get('action');
-    
-    if (from === 'wishlist' && action === 'favorite') {
-      setMessage('You need to create an account to add items to your favorites!');
-    }
-  }, [location]);
+  // Removed wishlist message handling - now using toast notifications
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -105,7 +96,7 @@ const AuthPage = () => {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <h1>Hola Fashion</h1>
+          <h1>Rallina</h1>
           <h2>{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
           {message && <div className="auth-message">{message}</div>}
         </div>

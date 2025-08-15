@@ -9,6 +9,8 @@ import CartPage from './pages/cart_page/CartPage';
 import AuthPage from './pages/auth/AuthPage';
 import ProfilePage from './pages/profile/ProfilePage';
 import WishlistPage from './pages/wishlist/WishlistPage';
+import TermsConditions from './pages/legal/TermsConditions';
+import PrivacyPolicy from './pages/legal/PrivacyPolicy';
 import Footer from './components/footer/Footer';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
@@ -49,6 +51,10 @@ function App() {
               <Route path="/account" element={<ShopPage category="account" />} />
               <Route path="/wishlist" element={<WishlistPage />} />
               <Route path="/cart" element={<CartPage />} />
+              
+              {/* Legal Pages */}
+              <Route path="/terms-conditions" element={<TermsConditions />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             </Routes>
             </main>
             <Footer />

@@ -8,12 +8,16 @@ import { useToast } from '../../../context/ToastContext';
 const ProductGrid = ({ products }) => {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { isAuthenticated } = useAuth();
-  const { showSuccess } = useToast();
+  const { showSuccess, showInfo } = useToast();
   const navigate = useNavigate();
 
   const handleWishlistToggle = (product) => {
     if (!isAuthenticated) {
-      navigate('/auth?from=wishlist&action=favorite');
+      showInfo('You need to create an account to add items to your favorites!', 4000);
+      // Navigate to signup page after a short delay to let user see the toast
+      setTimeout(() => {
+        navigate('/auth');
+      }, 1500);
       return;
     }
     
