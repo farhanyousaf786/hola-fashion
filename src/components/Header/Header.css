@@ -243,7 +243,7 @@
 
 .mobile-actions {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   align-items: center;
 }
 
@@ -418,5 +418,22 @@
   
   .social-icons, .contact-info {
     display: none;
+  }
+}
+
+/* Responsive mobile logo sizing */
+@media (max-width: 480px) {
+  .mobile-header .site-logo {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 360px) {
+  .mobile-header .site-logo {
+    font-size: 22px;
+  }
+  
+  .mobile-actions {
+    gap: 8px;
   }
 }

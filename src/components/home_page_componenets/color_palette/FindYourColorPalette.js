@@ -8,63 +8,39 @@ const FindYourColorPalette = () => {
   const colorCategories = [
     {
       id: 1,
-      name: 'White Dresses & Ball Gowns',
-      color: 'white',
-      image: '/images/demo-image.png'
+      name: 'Black Dresses & Ball Gowns',
+      color: 'black',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjMDAwMDAwIi8+CjxwYXRoIGQ9Ik0xMDAgNTBMMTIwIDEwMEgxNDBMMTUwIDEzMFYyMDBIMTMwVjIzMEgxMDBWMjMwSDcwVjIwMEg1MFYxMzBMNjAgMTAwSDgwTDEwMCA1MFoiIGZpbGw9IiMyMjIyMjIiLz4KPC9zdmc+'
     },
     {
       id: 2,
-      name: 'Black Dresses & Ball Gowns',
-      color: 'black',
-      image: '/images/demo-image.png'
+      name: 'White Dresses & Ball Gowns',
+      color: 'white',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiNFMEUwRTAiLz4KPHBhdGggZD0iTTEwMCA1MEwxMjAgMTAwSDE0MEwxNTAgMTMwVjIwMEgxMzBWMjMwSDEwMFYyMzBINzBWMjAwSDUwVjEzMEw2MCAxMDBIODBMMTAwIDUwWiIgZmlsbD0iI0Y4RjhGOCIvPgo8L3N2Zz4='
     },
     {
       id: 3,
-      name: 'Pink Dresses & Ball Gowns',
-      color: 'pink',
-      image: '/images/demo-image.png'
+      name: 'Red Dresses & Ball Gowns',
+      color: 'red',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjREM0MzQ0Ii8+CjxwYXRoIGQ9Ik0xMDAgNTBMMTIwIDEwMEgxNDBMMTUwIDEzMFYyMDBIMTMwVjIzMEgxMDBWMjMwSDcwVjIwMEg1MFYxMzBMNjAgMTAwSDgwTDEwMCA1MFoiIGZpbGw9IiNGRjU1NTUiLz4KPC9zdmc+'
     },
     {
       id: 4,
-      name: 'Red Dresses & Ball Gowns',
-      color: 'red',
-      image: '/images/demo-image.png'
+      name: 'Blue Dresses & Ball Gowns',
+      color: 'blue',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjMzMzM0ZGIi8+CjxwYXRoIGQ9Ik0xMDAgNTBMMTIwIDEwMEgxNDBMMTUwIDEzMFYyMDBIMTMwVjIzMEgxMDBWMjMwSDcwVjIwMEg1MFYxMzBMNjAgMTAwSDgwTDEwMCA1MFoiIGZpbGw9IiM2NjY2RkYiLz4KPC9zdmc+'
     },
     {
       id: 5,
-      name: 'Green Dresses & Ball Gowns',
-      color: 'green',
-      image: '/images/demo-image.png'
+      name: 'Pink Dresses & Ball Gowns',
+      color: 'pink',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjRkY2NkI2Ii8+CjxwYXRoIGQ9Ik0xMDAgNTBMMTIwIDEwMEgxNDBMMTUwIDEzMFYyMDBIMTMwVjIzMEgxMDBWMjMwSDcwVjIwMEg1MFYxMzBMNjAgMTAwSDgwTDEwMCA1MFoiIGZpbGw9IiNGRkI2RDkiLz4KPC9zdmc+'
     },
     {
       id: 6,
-      name: 'Blue Dresses & Ball Gowns',
-      color: 'blue',
-      image: '/images/demo-image.png'
-    },
-    {
-      id: 7,
-      name: 'Purple Dresses & Ball Gowns',
-      color: 'purple',
-      image: '/images/demo-image.png'
-    },
-    {
-      id: 8,
-      name: 'Orange Dresses',
-      color: 'orange',
-      image: '/images/demo-image.png'
-    },
-    {
-      id: 9,
       name: 'Gold Dresses & Ball Gowns',
       color: 'gold',
-      image: '/images/demo-image.png'
-    },
-    {
-      id: 10,
-      name: 'Yellow Dresses',
-      color: 'yellow',
-      image: '/images/demo-image.png'
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjRkZENzAwIi8+CjxwYXRoIGQ9Ik0xMDAgNTBMMTIwIDEwMEgxNDBMMTUwIDEzMFYyMDBIMTMwVjIzMEgxMDBWMjMwSDcwVjIwMEg1MFYxMzBMNjAgMTAwSDgwTDEwMCA1MFoiIGZpbGw9IiNGRkU1NTUiLz4KPC9zdmc+'
     }
   ];
 
