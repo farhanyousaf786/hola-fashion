@@ -296,7 +296,7 @@ const ProductPage = () => {
                 ADD TO CART
               </button>
               <button 
-                className={`wishlist-btn ${product && isInWishlist(product.id) ? 'active' : ''}`} 
+                className={`wishlist-btn-secondary ${product && isInWishlist(product.id) ? 'active' : ''}`} 
                 onClick={handleAddToWishlist}
               >
                 <img src="/icons/heart-icon.svg" alt="Add to Wishlist" />

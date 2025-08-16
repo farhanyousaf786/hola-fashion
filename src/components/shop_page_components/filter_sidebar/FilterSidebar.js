@@ -23,12 +23,8 @@ const FilterSidebar = ({ selectedFilters, onFilterChange, dynamicFilters }) => {
     'burgundy': '#800020'
   };
 
-  // Standard clothing sizes for Rallina
-  const standardSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', '3XL'];
-  
-  // Generate size filters using standard sizes, but also include any dynamic sizes
-  const allSizes = [...new Set([...standardSizes, ...dynamicFilters.sizes])];
-  const sizeFilters = allSizes.map(size => ({
+  // Only use sizes that are actually available in Firebase products
+  const sizeFilters = dynamicFilters.sizes.map(size => ({
     id: size.toLowerCase(),
     label: size.toUpperCase()
   }));

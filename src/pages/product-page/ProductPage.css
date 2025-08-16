@@ -169,8 +169,13 @@
 }
 
 .color-options {
-  display: flex;
-  gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 4px;
+  justify-content: start;
+  max-width: 280px;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 .color-option {
@@ -179,6 +184,13 @@
   align-items: center;
   gap: 5px;
   cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+.color-option:first-child {
+  margin-left: 0;
+  padding-left: 0;
 }
 
 .color-box {
@@ -211,34 +223,86 @@
 .quantity-selector {
   display: flex;
   align-items: center;
-  border: 1px solid #ccc;
+  gap: 8px;
   height: 50px;
 }
 
 .quantity-btn {
-  width: 40px;
-  height: 100%;
-  background: none;
+  width: 36px;
+  height: 36px;
+  background: #f8f9fa;
   border: none;
+  border-radius: 50%;
   font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: #333;
+}
+
+.quantity-btn:hover {
+  background: #e9ecef;
+  transform: scale(1.05);
 }
 
 .quantity-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: not-allowed;
+  transform: none;
 }
 
 .quantity {
   width: 40px;
   text-align: center;
   font-size: 16px;
+  font-weight: 500;
+  color: #333;
 }
 
 .action-buttons {
   display: flex;
   gap: 10px;
   flex: 1;
+  align-items: center;
+}
+
+.wishlist-btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.wishlist-btn-secondary:hover {
+  border-color: #ff4d4d;
+  color: #ff4d4d;
+}
+
+.wishlist-btn-secondary.active {
+  background: #ff4d4d;
+  border-color: #ff4d4d;
+  color: white;
+}
+
+.wishlist-btn-secondary img {
+  width: 16px;
+  height: 16px;
+  transition: filter 0.3s ease;
+}
+
+.wishlist-btn-secondary.active img {
+  filter: brightness(0) invert(1);
 }
 
 .add-to-cart-btn {

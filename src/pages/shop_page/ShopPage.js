@@ -49,6 +49,7 @@ const ShopPage = ({ category }) => {
     products.forEach(product => {
       // Extract sizes
       if (product.sizes && Array.isArray(product.sizes)) {
+        console.log('Product:', product.name, 'Sizes:', product.sizes);
         product.sizes.forEach(size => sizes.add(size));
       }
 
@@ -142,6 +143,7 @@ const ShopPage = ({ category }) => {
           originalPrice: item.originalPrice,
           image: item.images && item.images.length > 0 ? item.images[0] : 'https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg',
           colors: item.colors || [],
+          sizes: item.sizes || [],
           isWishlist: false,
           brand: item.brand,
           category: item.category,
