@@ -6,7 +6,7 @@ import ShopByPopularDresses from '../../components/home_page_componenets/popular
 import FindYourColorPalette from '../../components/home_page_componenets/color_palette/FindYourColorPalette';
 import CustomerReviews from '../../components/home_page_componenets/customer_reviews/CustomerReviews';
 import FeaturedBrands from '../../components/home_page_componenets/featured_brands/FeaturedBrands';
-import FeaturedIn from '../../components/home_page_componenets/featured_in/FeaturedIn';
+
 
 const HomePage = () => {
   return (
@@ -17,7 +17,6 @@ const HomePage = () => {
       <FindYourColorPalette />
       <CustomerReviews />
       <FeaturedBrands />
-      <FeaturedIn />
     </div>
   );
 };

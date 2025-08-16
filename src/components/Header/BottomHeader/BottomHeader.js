@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './BottomHeader.css';
 import { useCart } from '../../../context/CartContext';
 import { useAuth } from '../../../context/AuthContext';
@@ -10,6 +10,7 @@ const BottomHeader = () => {
   const { isAuthenticated } = useAuth();
   const { getWishlistCount } = useWishlist();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleWishlistClick = (e) => {
     if (!isAuthenticated) {
@@ -28,32 +29,32 @@ const BottomHeader = () => {
   return (
     <nav className="bottom-header">
       <ul className="nav-menu">
-        <li className="dropdown-item">
-          <Link to="/prom">PROM <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></Link>
+        <li className="nav-item">
+          <Link to="/prom" className={location.pathname === '/prom' ? 'active' : ''}>PROM</Link>
         </li>
-        <li className="dropdown-item">
-          <Link to="/hoco">HOCO <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></Link>
+        <li className="nav-item">
+          <Link to="/hoco" className={location.pathname === '/hoco' ? 'active' : ''}>HOCO</Link>
         </li>
-        <li className="dropdown-item">
-          <Link to="/wedding">WEDDING <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></Link>
+        <li className="nav-item">
+          <Link to="/wedding" className={location.pathname === '/wedding' ? 'active' : ''}>WEDDING</Link>
         </li>
-        <li className="dropdown-item">
-          <Link to="/wedding-guest">WEDDING GUEST <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></Link>
+        <li className="nav-item">
+          <Link to="/wedding-guest" className={location.pathname === '/wedding-guest' ? 'active' : ''}>WEDDING GUEST</Link>
         </li>
-        <li className="dropdown-item">
-          <Link to="/bridesmaid">BRIDESMAID <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></Link>
+        <li className="nav-item">
+          <Link to="/bridesmaid" className={location.pathname === '/bridesmaid' ? 'active' : ''}>BRIDESMAID</Link>
         </li>
-        <li className="dropdown-item">
-          <Link to="/mother-of-bride">MOTHER OF BRIDE <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></Link>
+        <li className="nav-item">
+          <Link to="/mother-of-bride" className={location.pathname === '/mother-of-bride' ? 'active' : ''}>MOTHER OF BRIDE</Link>
         </li>
-        <li className="dropdown-item">
-          <Link to="/quince">QUINCE <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></Link>
+        <li className="nav-item">
+          <Link to="/quince" className={location.pathname === '/quince' ? 'active' : ''}>QUINCE</Link>
         </li>
-        <li className="dropdown-item">
-          <Link to="/formal">FORMAL <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></Link>
+        <li className="nav-item">
+          <Link to="/formal" className={location.pathname === '/formal' ? 'active' : ''}>FORMAL</Link>
         </li>
-        <li className="dropdown-item">
-          <Link to="/others">OTHERS <img src="/icons/dropdown-arrow.svg" alt="" className="dropdown-arrow" /></Link>
+        <li className="nav-item">
+          <Link to="/others" className={location.pathname === '/others' ? 'active' : ''}>OTHERS</Link>
         </li>
       </ul>
       <div className="user-actions">
