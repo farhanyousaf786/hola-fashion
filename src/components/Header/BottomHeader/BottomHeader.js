@@ -30,7 +30,7 @@ const BottomHeader = () => {
     <nav className="bottom-header">
       <ul className="nav-menu">
         <li className="nav-item">
-          <Link to="/prom" className={location.pathname === '/prom' ? 'active' : ''}>PROM</Link>
+          <Link to="/prom" className={location.pathname === '/prom' ? 'active' : ''}>PROMO</Link>
         </li>
         <li className="nav-item">
           <Link to="/hoco" className={location.pathname === '/hoco' ? 'active' : ''}>HOCO</Link>

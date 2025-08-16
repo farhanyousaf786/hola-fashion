@@ -23,10 +23,14 @@ const FilterSidebar = ({ selectedFilters, onFilterChange, dynamicFilters }) => {
     'burgundy': '#800020'
   };
 
-  // Generate dynamic filter data
-  const sizeFilters = dynamicFilters.sizes.map(size => ({
+  // Standard clothing sizes for Rallina
+  const standardSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', '3XL'];
+  
+  // Generate size filters using standard sizes, but also include any dynamic sizes
+  const allSizes = [...new Set([...standardSizes, ...dynamicFilters.sizes])];
+  const sizeFilters = allSizes.map(size => ({
     id: size.toLowerCase(),
-    label: size
+    label: size.toUpperCase()
   }));
 
   const colorFilters = dynamicFilters.colors.map(color => ({
@@ -96,26 +100,7 @@ const FilterSidebar = ({ selectedFilters, onFilterChange, dynamicFilters }) => {
         </div>
       )}
 
-      {brandFilters.length > 0 && (
-        <div className="filter-section">
-          <div className="filter-header">
-            <h3>BRAND</h3>
-            <span className="dropdown-arrow">▼</span>
-          </div>
-          <div className="filter-options">
-            {brandFilters.map(filter => (
-              <div className="designer-option" key={filter.id}>
-                <div 
-                  className={`designer-box ${isFilterSelected('designer', filter.id) ? 'selected' : ''}`}
-                  onClick={() => handleFilterClick('designer', filter.id)}
-                >
-                  {filter.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+
 
       {priceFilters.length > 0 && (
         <div className="filter-section">
