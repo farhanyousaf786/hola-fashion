@@ -57,18 +57,30 @@ const CheckoutPage = () => {
     
     try {
       // Create order object
-      const orderData = {
+      // Sanitize order data
+      function removeUndefined(obj) {
+        if (!obj || typeof obj !== 'object') return obj;
+        return Object.fromEntries(
+          Object.entries(obj)
+            .filter(([_, v]) => v !== undefined)
+            .map(([k, v]) => [k, typeof v === 'object' && v !== null ? removeUndefined(v) : v])
+        );
+      }
+      const { serverTimestamp } = await import('firebase/firestore');
+      const orderData = removeUndefined({
         items: cart.items,
         total: getCartTotal(),
-        customerDetails: orderDetails,
-        paymentResult: paymentResult,
-        timestamp: new Date(),
+        customerDetails: removeUndefined(orderDetails),
+        paymentResult: removeUndefined(paymentResult),
+        timestamp: serverTimestamp(),
         status: 'confirmed'
-      };
+      });
 
-      // TODO: Send to Firebase Function for processing
-      console.log('Order data:', orderData);
-      
+      // Save order to Firestore (user or anonymous)
+      const { saveOrder } = await import('../../firebase/saveOrder');
+      const orderRef = await saveOrder(orderData);
+      orderData.orderId = orderRef.id;
+
       // Clear cart and show success
       clearCart();
       showSuccess('Order placed successfully!');

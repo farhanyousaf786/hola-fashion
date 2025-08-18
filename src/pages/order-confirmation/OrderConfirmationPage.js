@@ -69,20 +69,26 @@ const OrderConfirmationPage = () => {
           <div className="order-items">
             <h2>Order Items</h2>
             <div className="items-list">
-              {orderData.items.map((item, index) => (
-                <div key={index} className="order-item">
-                  <img src={item.image} alt={item.name} />
-                  <div className="item-details">
-                    <h3>{item.name}</h3>
-                    <p>Size: {item.selectedSize}</p>
-                    <p>Color: {item.selectedColor}</p>
-                    <p>Quantity: {item.quantity}</p>
+              {Array.isArray(orderData.items) && orderData.items.length > 0 ? (
+                orderData.items.map((item, index) => (
+                  <div key={index} className="order-item">
+                    <img src={item.image} alt={item.name} />
+                    <div className="item-details">
+                      <h3>{item.name}</h3>
+                      <p>Size: {item.selectedSize}</p>
+                      <p>Color: {item.selectedColor}</p>
+                      <p>Quantity: {item.quantity}</p>
+                    </div>
+                    <div className="item-price">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </div>
                   </div>
-                  <div className="item-price">
-                    ${(item.price * item.quantity).toFixed(2)}
-                  </div>
+                ))
+              ) : (
+                <div className="order-item">
+                  <p>No items found in this order.</p>
                 </div>
-              ))}
+              )}
             </div>
             <div className="order-total">
               <strong>Total: ${orderData.total.toFixed(2)}</strong>
