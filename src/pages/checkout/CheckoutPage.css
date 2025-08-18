@@ -20,9 +20,16 @@
 
 .checkout-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.2fr;
   gap: 40px;
   margin-bottom: 40px;
+  align-items: flex-start;
+}
+
+.right-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* Order Summary */

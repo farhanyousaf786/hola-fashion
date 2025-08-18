@@ -133,95 +133,96 @@ const CheckoutPage = () => {
             </div>
           </div>
 
-          {/* Customer Details Form */}
-          <div className="customer-details">
-            <h2>Shipping Information</h2>
-            <form className="details-form">
-              <div className="form-row">
+          {/* Right Side: Shipping + Payment */}
+          <div className="right-section">
+            <div className="customer-details">
+              <h2>Shipping Information</h2>
+              <form className="details-form">
+                <div className="form-row">
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="First Name"
+                    value={orderDetails.firstName}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={orderDetails.lastName}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                
                 <input
-                  type="text"
-                  name="firstName"
-                  placeholder="First Name"
-                  value={orderDetails.firstName}
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={orderDetails.email}
                   onChange={handleInputChange}
                   required
                 />
+                
                 <input
-                  type="text"
-                  name="lastName"
-                  placeholder="Last Name"
-                  value={orderDetails.lastName}
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone Number"
+                  value={orderDetails.phone}
                   onChange={handleInputChange}
                   required
                 />
-              </div>
-              
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={orderDetails.email}
-                onChange={handleInputChange}
-                required
-              />
-              
-              <input
-                type="tel"
-                name="phone"
-                placeholder="Phone Number"
-                value={orderDetails.phone}
-                onChange={handleInputChange}
-                required
-              />
-              
-              <input
-                type="text"
-                name="address"
-                placeholder="Street Address"
-                value={orderDetails.address}
-                onChange={handleInputChange}
-                required
-              />
-              
-              <div className="form-row">
+                
                 <input
                   type="text"
-                  name="city"
-                  placeholder="City"
-                  value={orderDetails.city}
+                  name="address"
+                  placeholder="Street Address"
+                  value={orderDetails.address}
                   onChange={handleInputChange}
                   required
                 />
-                <input
-                  type="text"
-                  name="state"
-                  placeholder="State"
-                  value={orderDetails.state}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  type="text"
-                  name="zipCode"
-                  placeholder="ZIP Code"
-                  value={orderDetails.zipCode}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-            </form>
-          </div>
+                
+                <div className="form-row">
+                  <input
+                    type="text"
+                    name="city"
+                    placeholder="City"
+                    value={orderDetails.city}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="state"
+                    placeholder="State"
+                    value={orderDetails.state}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="zipCode"
+                    placeholder="ZIP Code"
+                    value={orderDetails.zipCode}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              </form>
+            </div>
 
-          {/* Payment Form */}
-          <div className="payment-section">
-            <h2>Payment Information</h2>
-            <SquarePaymentForm
-              total={getCartTotal()}
-              onPaymentSuccess={handlePaymentSuccess}
-              onPaymentError={handlePaymentError}
-              isProcessing={isProcessing}
-              customerDetails={orderDetails}
-            />
+            <div className="payment-section">
+              <h2>Payment Information</h2>
+              <SquarePaymentForm
+                total={getCartTotal()}
+                onPaymentSuccess={handlePaymentSuccess}
+                onPaymentError={handlePaymentError}
+                isProcessing={isProcessing}
+                customerDetails={orderDetails}
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -156,11 +156,13 @@ const SquarePaymentForm = ({
             disabled={isProcessing}
             onClick={async (e) => {
               e.preventDefault();
-              if (paymentForm) {
-                await handlePayment(paymentForm);
-              }
+              if (!paymentForm || isProcessing) return;
+              handlePayment(paymentForm);
             }}
           >
+            {isProcessing ? (
+              <span className="spinner" style={{marginRight:8,verticalAlign:'middle'}}></span>
+            ) : null}
             {isProcessing ? 'Processing...' : `Pay $${total.toFixed(2)}`}
           </button>
           <div className="payment-security">
