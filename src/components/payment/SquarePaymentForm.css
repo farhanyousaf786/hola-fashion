@@ -1,0 +1,165 @@
+.square-payment-form {
+  width: 100%;
+}
+
+/* Loading State */
+.loading-payment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #ff4d4d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-payment p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Payment Form Container */
+.payment-form-container {
+  margin-bottom: 20px;
+}
+
+.card-container {
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+  min-height: 120px;
+}
+
+/* Square Payment Button */
+.square-payment-button {
+  width: 100%;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.square-payment-button:hover:not(:disabled) {
+  background: #ff3333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+}
+
+.square-payment-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.square-payment-button:active {
+  transform: translateY(0);
+}
+
+/* Security Section */
+.payment-security {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+}
+
+.security-badges {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.security-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.security-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Square Web SDK Styling Overrides */
+.card-container iframe {
+  border: none !important;
+  border-radius: 4px !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card-container {
+    padding: 15px;
+    min-height: 100px;
+  }
+  
+  .square-payment-button {
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+  
+  .security-badges {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .security-badge {
+    justify-content: center;
+  }
+  
+  .payment-security {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loading-payment {
+    padding: 30px 15px;
+  }
+  
+  .spinner {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .square-payment-button {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+}

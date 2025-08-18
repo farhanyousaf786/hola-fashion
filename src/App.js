@@ -6,6 +6,8 @@ import HomePage from './pages/home_page/HomePage';
 import ShopPage from './pages/shop_page/ShopPage';
 import ProductPage from './pages/product-page/ProductPage';
 import CartPage from './pages/cart_page/CartPage';
+import CheckoutPage from './pages/checkout/CheckoutPage';
+import OrderConfirmationPage from './pages/order-confirmation/OrderConfirmationPage';
 import AuthPage from './pages/auth/AuthPage';
 import ProfilePage from './pages/profile/ProfilePage';
 import WishlistPage from './pages/wishlist/WishlistPage';
@@ -51,6 +53,8 @@ function App() {
               <Route path="/account" element={<ShopPage category="account" />} />
               <Route path="/wishlist" element={<WishlistPage />} />
               <Route path="/cart" element={<CartPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
               
               {/* Legal Pages */}
               <Route path="/terms-conditions" element={<TermsConditions />} />

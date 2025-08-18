@@ -1,10 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './CartPage.css';
 import { useCart } from '../../context/CartContext';
 
 const CartPage = () => {
   const { cart, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
+  const navigate = useNavigate();
 
   const handleQuantityChange = (itemKey, newQuantity) => {
     if (newQuantity < 1) {
@@ -16,6 +17,10 @@ const CartPage = () => {
 
   const handleRemoveItem = (itemKey) => {
     removeFromCart(itemKey);
+  };
+
+  const handleCheckout = () => {
+    navigate('/checkout');
   };
 
   const formatPrice = (price) => {
@@ -167,7 +172,7 @@ const CartPage = () => {
               </div>
             </div>
 
-            <button className="checkout-btn">
+            <button className="checkout-btn" onClick={handleCheckout}>
               PROCEED TO CHECKOUT
             </button>
           </div>
