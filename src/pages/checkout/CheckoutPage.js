@@ -68,7 +68,7 @@ const CheckoutPage = () => {
       }
       const { serverTimestamp } = await import('firebase/firestore');
       const orderData = removeUndefined({
-        items: cart.items,
+        items: Array.isArray(cart.items) ? JSON.parse(JSON.stringify(cart.items)) : [],
         total: getCartTotal(),
         customerDetails: removeUndefined(orderDetails),
         paymentResult: removeUndefined(paymentResult),
