@@ -83,6 +83,22 @@ const OrderConfirmationPage = () => {
             setOrderData(loaded);
           } else {
             console.log('[OCP] No order found for id', orderId);
+            // Server-side fallback: fetch via backend so links work on any device
+            try {
+              const res = await fetch(`/api/orders/${orderId}`);
+              if (res.ok) {
+                const data = await res.json();
+                if (isMounted) {
+                  console.log('[OCP] Fetched order via server fallback');
+                  setOrderData(data);
+                }
+              } else {
+                const txt = await res.text();
+                console.log('[OCP] Server fallback not found', txt);
+              }
+            } catch (e) {
+              console.warn('[OCP] Server fallback failed', e);
+            }
           }
         } finally {
           if (isMounted) setLoading(false);

@@ -14,6 +14,7 @@ import WishlistPage from './pages/wishlist/WishlistPage';
 import TermsConditions from './pages/legal/TermsConditions';
 import PrivacyPolicy from './pages/legal/PrivacyPolicy';
 import ReturnPolicy from './pages/legal/ReturnPolicy';
+import ShippingPolicy from './pages/legal/ShippingPolicy';
 import Footer from './components/footer/Footer';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
@@ -62,6 +63,7 @@ function App() {
               <Route path="/terms-conditions" element={<TermsConditions />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/return-policy" element={<ReturnPolicy />} />
+              <Route path="/shipping-policy" element={<ShippingPolicy />} />
             </Routes>
             </main>
             <Footer />

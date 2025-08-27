@@ -1,5 +1,5 @@
 import { db, auth } from "../firebase/firebaseConfig";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 
 export async function saveOrder(orderData) {
   const user = auth.currentUser;
@@ -29,6 +29,12 @@ export async function saveOrder(orderData) {
       createdAt: timestamp,
       isAnonymous: true,
     });
+  }
+  // Persist the generated document ID so server-side lookups by 'orderId' work
+  try {
+    await updateDoc(orderRef, { orderId: orderRef.id });
+  } catch (e) {
+    console.warn('[saveOrder] Failed to update orderId field', e);
   }
   return orderRef;
 }
