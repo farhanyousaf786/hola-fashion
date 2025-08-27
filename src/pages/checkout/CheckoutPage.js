@@ -84,7 +84,7 @@ const CheckoutPage = () => {
       // Clear cart and show success
       clearCart();
       showSuccess('Order placed successfully!');
-      navigate('/order-confirmation', { state: { orderData } });
+      navigate(`/order-confirmation/${orderData.orderId}`, { state: { orderData } });
       
     } catch (error) {
       console.error('Order processing error:', error);

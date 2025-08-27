@@ -55,6 +55,7 @@ function App() {
               <Route path="/wishlist" element={<WishlistPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/order-confirmation/:orderId" element={<OrderConfirmationPage />} />
               <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
               
               {/* Legal Pages */}
