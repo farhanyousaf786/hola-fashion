@@ -154,3 +154,8 @@
     font-size: 28px;
   }
 }
+
+/* Force-hide currency selector if present */
+.middle-header .currency-selector {
+  display: none !important;
+}

@@ -23,6 +23,37 @@ const OrderConfirmationPage = () => {
     );
   }
 
+  // Resolve a robust display date
+  const resolveDate = (ts) => {
+    try {
+      if (!ts) return null;
+      // Firestore Timestamp
+      if (typeof ts === 'object' && typeof ts.toDate === 'function') return ts.toDate();
+      // Square created_at string (ISO) or any ISO string
+      if (typeof ts === 'string') {
+        const d = new Date(ts);
+        return isNaN(d.getTime()) ? null : d;
+      }
+      // Epoch ms or number-like
+      if (typeof ts === 'number') {
+        const d = new Date(ts);
+        return isNaN(d.getTime()) ? null : d;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  const candidateTs =
+    orderData.timestamp ||
+    orderData.createdAt ||
+    orderData.paymentResult?.createdAt ||
+    orderData.paymentResult?.created_at;
+
+  const resolvedDate = resolveDate(candidateTs) || new Date();
+  const orderDateText = resolvedDate.toLocaleString();
+
   return (
     <div className="order-confirmation-page">
       <div className="confirmation-container">
@@ -42,7 +73,7 @@ const OrderConfirmationPage = () => {
               </div>
               <div className="info-item">
                 <span className="label">Order Date:</span>
-                <span className="value">{new Date(orderData.timestamp).toLocaleDateString()}</span>
+                <span className="value">{orderDateText}</span>
               </div>
               <div className="info-item">
                 <span className="label">Total Amount:</span>

@@ -2,92 +2,68 @@ import React, { useState } from 'react';
 import './Footer.css';
 
 const Footer = () => {
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubscribe = (e) => {
     e.preventDefault();
-    // Handle contact form submission
-    console.log('Contact form submission:', { email, message });
-    
-    // Show success message (you can replace with actual API call)
-    alert('Thank you for your query! We will get back to you soon.');
-    
-    // Reset form
-    setEmail('');
-    setMessage('');
+    if (!ageConfirmed) {
+      alert('Please confirm you are at least 16 years of age.');
+      return;
+    }
+    console.log('Newsletter subscribe:', { email: newsletterEmail, ageConfirmed });
+    alert('Thanks for subscribing!');
+    setNewsletterEmail('');
+    setAgeConfirmed(false);
   };
 
   return (
     <footer className="footer">
       <div className="footer-container">
-        <div className="footer-section">
-          <h3 className="footer-title">EXPLORE</h3>
-          <ul className="footer-links">
-            <li><a href="/prom-dresses">Prom Dresses</a></li>
-            <li><a href="/mob-dresses">MOB Dresses</a></li>
-            <li><a href="/formal-dresses">Formal Dresses</a></li>
-            <li><a href="/plus-size-dresses">Plus Size Dresses</a></li>
-            <li><a href="/evening-dresses">Evening Dresses</a></li>
-            <li><a href="/homecoming-dresses">Homecoming Dresses</a></li>
-            <li><a href="/new-years-eve-dresses">New Years Eve Dresses</a></li>
-            <li><a href="/holiday-dresses">Holiday Dresses</a></li>
-          </ul>
-        </div>
-
-        <div className="footer-section">
-          <h3 className="footer-title">POLICIES & HELP</h3>
-          <ul className="footer-links">
-            <li><a href="/privacy-policy">Privacy Policy</a></li>
-            <li><a href="/terms-conditions">Terms & Conditions</a></li>
-            <li><a href="/shipping-policy">Shipping Policy</a></li>
-            <li><a href="/return-policy">Return Policy</a></li>
-            <li><a href="/faq">FAQ & Q&A</a></li>
-            <li><a href="/size-guide">Size Guide</a></li>
-          </ul>
-        </div>
-
-        <div className="footer-section">
-          <div className="contact-form-header">
-            <h3 className="footer-title">Send in your queries!</h3>
-            <button type="submit" form="contact-form" className="send-query-btn-top">Send Query!</button>
+        <div className="footer-top">
+          <div className="footer-left">
+            <h2 className="brand-mark">Rallina</h2>
+            <div className="footer-columns">
+              <div className="footer-section">
+                <h3 className="footer-title">Policies & Help</h3>
+                <ul className="footer-links">
+                  <li><a href="/privacy-policy">Privacy Policy</a></li>
+                  <li><a href="/terms-conditions">Terms & Conditions</a></li>
+                  <li><a href="/shipping-policy">Shipping Policy</a></li>
+                  <li><a href="/return-policy">Return Policy</a></li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <form id="contact-form" className="contact-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <textarea 
-                placeholder="Tell us about your project?" 
-                rows="4"
-                className="contact-textarea"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+          <div className="footer-right">
+            <h3 className="newsletter-title">Get the freshest Rallina news</h3>
+            <form className="newsletter-form" onSubmit={handleSubscribe}>
+              <input
+                type="email"
+                className="newsletter-input"
+                placeholder="Your email here"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
                 required
               />
-            </div>
-            <div className="form-group">
-              <input 
-                type="email" 
-                placeholder="Your Email?" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                required 
-                className="contact-input"
-              />
-            </div>
-          </form>
-        </div>
-
-        <div className="footer-section">
-          <h3 className="footer-title">CONNECT WITH US</h3>
-          <div className="contact-info">
-            <p className="email">
-              <i className="email-icon">✉️</i> cs@couturecandy.com
-            </p>
+              <button className="newsletter-btn" type="submit">Subscribe</button>
+            </form>
+            <label className="newsletter-note">
+              <input type="checkbox" checked={ageConfirmed} onChange={(e) => setAgeConfirmed(e.target.checked)} />
+              <span>By checking the box, you agree that you are at least 16 years of age.</span>
+            </label>
           </div>
         </div>
       </div>
 
       <div className="footer-social">
-        <h3 className="social-title">FOLLOW US</h3>
+        <div className="social-header">
+          <h3 className="social-title">FOLLOW US</h3>
+          <a href="mailto:support@rallina.com" className="social-email" aria-label="Email support@rallina.com">
+            <span className="email-icon">✉️</span>
+            support@rallina.com
+          </a>
+        </div>
         <div className="social-icons">
           <a href="https://facebook.com/rallina" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="social-link facebook">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">

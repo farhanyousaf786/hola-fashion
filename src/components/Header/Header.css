@@ -437,3 +437,9 @@
     gap: 8px;
   }
 }
+
+/* Force-hide currency selector across header (desktop + mobile) */
+.site-header .currency-selector,
+.mobile-user-bar .currency-selector {
+  display: none !important;
+}

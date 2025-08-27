@@ -116,23 +116,29 @@ const SquarePaymentForm = ({
         // Create payment request for backend
         const paymentData = {
           token: result.token,
-          amount: Math.round(total * 100), // Convert to cents
+          amount: Math.round(total * 100), // cents
           currency: 'USD',
           customerDetails: customerDetails,
-          idempotencyKey: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+          idempotencyKey: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          locationId: SQUARE_LOCATION_ID
         };
 
-        // TODO: Send to Firebase Function for processing
-        // For now, simulate successful payment
-        console.log('Payment data to be sent to backend:', paymentData);
-        
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
+        // Call our server to create the Sandbox payment
+        const resp = await fetch('/api/payments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(paymentData)
+        });
+        const data = await resp.json();
+        if (!resp.ok) {
+          console.error('Square API error:', data);
+          throw new Error(data?.error?.[0]?.detail || 'Payment failed');
+        }
+
         onPaymentSuccess({
-          paymentId: `sq-payment-${Date.now()}`,
+          paymentId: data?.payment?.id || `sq-payment-${Date.now()}`,
           amount: total,
-          status: 'COMPLETED',
+          status: data?.payment?.status || 'COMPLETED',
           token: result.token
         });
 

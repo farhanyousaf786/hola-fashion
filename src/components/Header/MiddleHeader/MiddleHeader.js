@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './MiddleHeader.css';
 
 const MiddleHeader = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -27,18 +28,22 @@ const MiddleHeader = () => {
     }
   };
 
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    // Always scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Navigate home only if not already on home
+    if (location.pathname !== '/') {
+      navigate('/');
+    }
+  };
+
   return (
     <div className="middle-header">
-      <div className="currency-selector">
-        <button className="currency-btn">
-          <img src="/icons/flag-icon.svg" alt="US Flag" className="flag-icon" />
-          USD
-          <span className="dropdown-arrow">▼</span>
-        </button>
-      </div>
+      {/* currency selector removed */}
       
       <div className="logo-container">
-        <Link to="/" className="logo-link">
+        <Link to="/" className="logo-link" onClick={handleLogoClick}>
           <h1 className="site-logo">Rallina</h1>
         </Link>
       </div>

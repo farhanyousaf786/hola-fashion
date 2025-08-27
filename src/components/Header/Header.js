@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Header.css';
 import TopHeader from './TopHeader/TopHeader';
 import MiddleHeader from './MiddleHeader/MiddleHeader';
@@ -13,6 +13,7 @@ const Header = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { getCartItemCount } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleResize = () => {
@@ -47,6 +48,19 @@ const Header = () => {
     setMobileMenuOpen(false); // Close menu when search opens
   };
 
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    // Close any open overlays
+    setMobileMenuOpen(false);
+    setMobileSearchOpen(false);
+    // Always scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Navigate home only if not already there
+    if (location.pathname !== '/') {
+      navigate('/');
+    }
+  };
+
   const handleMobileSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
@@ -71,11 +85,7 @@ const Header = () => {
         <>
           <div className="mobile-header">
             <div className="mobile-user-bar">
-              <div className="currency-selector">
-                <img src="/icons/flag-icon.svg" alt="US Flag" className="flag-icon" />
-                <span>USD</span>
-                <span className="dropdown-arrow">▼</span>
-              </div>
+              {/* currency selector removed */}
               
               <div className="user-icons">
                 <a href="#account">
@@ -97,7 +107,7 @@ const Header = () => {
               </button>
               
               <div className="logo-container">
-                <Link to="/" className="logo-link">
+                <Link to="/" className="logo-link" onClick={handleLogoClick}>
                   <h1 className="site-logo">Rallina</h1>
                 </Link>
               </div>

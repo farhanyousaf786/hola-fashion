@@ -1,7 +1,7 @@
 .footer {
-  background-color: #1a1a1a;
+  background-color: #000; /* true black */
   color: #fff;
-  padding: 50px 0 20px;
+  padding: 56px 0 24px;
   width: 100%;
   max-width: 100% !important;
 }
@@ -14,11 +14,92 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
-  gap: 20px;
+  gap: 24px;
+}
+
+/* Top row layout */
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 32px;
+  width: 100%;
+}
+
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.brand-mark {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.footer-columns {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.newsletter-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e5e5e5;
+}
+
+.newsletter-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.newsletter-input {
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid #2f2f2f;
+  border-right: none;
+  background: #0c0c0c;
+  color: #eaeaea;
+  border-radius: 6px 0 0 6px;
+}
+
+.newsletter-input::placeholder {
+  color: #8a8a8a;
+}
+
+.newsletter-btn {
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid #2f2f2f;
+  background: transparent;
+  color: #eaeaea;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+}
+
+.newsletter-btn:hover {
+  background: #111;
+}
+
+.newsletter-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #bdbdbd;
+  font-size: 13px;
 }
 
 .footer-section {
-  width: 25%;
+  flex: 1 1 280px; /* grow, shrink, basis */
+  min-width: 260px;
+  max-width: 33.33%;
   margin-bottom: 30px;
   padding: 0 15px;
 }
@@ -40,7 +121,7 @@
   left: 0;
   width: 100%;
   height: 1px;
-  background-color: #333;
+  background-color: #2a2a2a; /* softer divider */
 }
 
 .footer-links {
@@ -57,11 +138,13 @@
   color: #ccc;
   text-decoration: none;
   font-size: 14px;
-  transition: color 0.3s;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }
 
 .footer-links a:hover {
   color: #fff;
+  text-decoration: underline;
+  text-decoration-color: rgba(255,255,255,0.35);
 }
 
 .contact-info p {
@@ -76,6 +159,15 @@
   color: #ff4c4c;
   margin-right: 10px;
   font-size: 16px;
+}
+
+/* Email chip style */
+.contact-info .email {
+  background-color: #2a2a2a;
+  border: 1px solid #333;
+  color: #ddd;
+  padding: 10px 12px;
+  border-radius: 10px;
 }
 
 .contact-form-header {
@@ -116,10 +208,11 @@
 }
 
 .contact-form {
-  background: linear-gradient(135deg, #4a4a8a 0%, #6b5b95 100%);
+  background-color: #222; /* neutral dark */
   padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid #333;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 .form-group {
@@ -129,27 +222,27 @@
 .contact-input,
 .contact-textarea {
   width: 100%;
-  padding: 12px 15px;
-  border: none;
-  border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  padding: 12px 14px;
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  background-color: #1f1f1f;
+  color: #eee;
   font-size: 14px;
   font-family: 'Poppins', sans-serif;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .contact-input::placeholder,
 .contact-textarea::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+  color: #8a8a8a;
 }
 
 .contact-input:focus,
 .contact-textarea:focus {
   outline: none;
-  background-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+  background-color: #232323;
+  border-color: #e91e63; /* brand accent */
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.15);
 }
 
 .contact-textarea {
@@ -188,7 +281,39 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  border-top: 1px solid #333;
+  border-top: 1px solid #2a2a2a;
+}
+
+/* Social header: title on left, email chip on right */
+.social-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.social-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #2a2a2a;
+  border: 1px solid #333;
+  color: #ddd;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.social-email:hover {
+  color: #fff;
+  border-color: #444;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.15);
+}
+
+.social-email .email-icon {
+  color: #e91e63;
 }
 
 .social-title {
@@ -209,7 +334,7 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background-color: #333;
+  background-color: #2b2b2b;
   color: #fff;
   border-radius: 50%;
   text-decoration: none;
@@ -219,6 +344,11 @@
 .social-link:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.social-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.35);
 }
 
 .social-link.facebook:hover {
@@ -238,7 +368,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  border-top: 1px solid #333;
+  border-top: 1px solid #2a2a2a;
   text-align: center;
   font-size: 14px;
   color: #ccc;
@@ -247,19 +377,36 @@
 /* Mobile Styles */
 @media (max-width: 768px) {
   .footer {
-    padding: 40px 0 20px;
+    padding: 44px 0 20px;
   }
   
   .footer-container {
     flex-direction: column;
     padding: 0 15px;
   }
+
+  .footer-top {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
   
-  .footer-section {
+  /* Newsletter mobile stacking */
+  .newsletter-form {
+    grid-template-columns: 1fr;
+  }
+  .newsletter-input {
     width: 100%;
-    margin-bottom: 25px;
-    padding: 0;
-    text-align: center;
+    border-right: 1px solid #2f2f2f; /* restore border since stacked */
+    border-radius: 6px;
+  }
+  .newsletter-btn {
+    width: 100%;
+    border-radius: 6px;
+  }
+  .newsletter-note {
+    text-align: left;
+    line-height: 1.4;
   }
   
   .footer-title {
@@ -288,6 +435,12 @@
   .footer-social {
     text-align: center;
     padding: 20px 15px;
+  }
+
+  .social-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
   }
   
   .social-icons {
