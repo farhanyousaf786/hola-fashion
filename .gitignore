@@ -20,3 +20,15 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# secrets and credentials
+serviceAccount.json
+serviceAccount*.json
+firebase-adminsdk-*.json
+*.pem
+*.p12
+*.pfx
+*.key
+*.crt
+.credentials/
+secrets/
