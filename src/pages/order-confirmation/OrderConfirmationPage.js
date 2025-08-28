@@ -96,6 +96,8 @@ const OrderConfirmationPage = () => {
 
     async function init() {
       if (!orderId) return;
+      // If we already have data, don't fetch again
+      if (orderData) return;
       setLoading(true);
       // Wait for auth state, then attempt both lookups
       unsub = onAuthStateChanged(auth, async (user) => {
@@ -134,7 +136,7 @@ const OrderConfirmationPage = () => {
 
     init();
     return () => { isMounted = false; unsub && unsub(); };
-  }, [orderId, orderData]);
+  }, [orderId]);
 
   // After we know owner (anon/user), load their recent orders list
   useEffect(() => {
@@ -320,10 +322,7 @@ const OrderConfirmationPage = () => {
                     }];
                   }
                 }
-                // Debug: log derived display items
-                try {
-                  console.log('[OCP] Derived displayItems:', displayItems);
-                } catch {}
+                // Silence noisy derived items log to avoid console spam
                 return displayItems && displayItems.length ? (
                   displayItems.map((item, index) => (
                     <div key={index} className="order-item">
