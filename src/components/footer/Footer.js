@@ -101,7 +101,7 @@ const Footer = () => {
       </div>
 
       <div className="footer-copyright">
-        <p>Copyright © 2025 Designed and Developed By Rallina.</p>
+        <p>Copyright © 2025 Designed and Developed By Techenex.</p>
       </div>
     </footer>
   );

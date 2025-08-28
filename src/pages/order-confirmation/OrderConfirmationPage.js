@@ -30,6 +30,17 @@ const OrderConfirmationPage = () => {
 
     async function tryLoad(authUid) {
       console.log('[OCP] tryLoad start', { orderId, uid });
+      // -1) New flat anonymous path: anonymousOrders/{orderId}
+      try {
+        const flatAnonRef = doc(db, 'anonymousOrders', orderId);
+        const flatAnonSnap = await getDoc(flatAnonRef);
+        if (flatAnonSnap.exists()) {
+          console.log('[OCP] Found order in flat anonymousOrders path');
+          return { id: flatAnonSnap.id, ...flatAnonSnap.data(), _owner: { type: 'anon_flat' } };
+        }
+      } catch (e) {
+        console.warn('Flat anon order lookup failed:', e);
+      }
       // 0) If uid is provided in URL, try that path first
       if (uid && orderId) {
         try {
@@ -138,11 +149,18 @@ const OrderConfirmationPage = () => {
     return () => { isMounted = false; unsub && unsub(); };
   }, [orderId]);
 
-  // After we know owner (anon/user), load their recent orders list
+  // After we know owner (anon/user), load their recent orders list (once per owner id)
+  const lastOwnerLoadedRef = React.useRef(null);
   useEffect(() => {
     let isMounted = true;
     async function loadAll() {
-      if (!orderData?._owner) return;
+      const owner = orderData?._owner;
+      if (!owner?.id) return;
+      // Do not try to load recent orders for flat anonymous docs
+      if (owner.type === 'anon_flat') return;
+      const ownerKey = `${owner.type}:${owner.id}`;
+      if (lastOwnerLoadedRef.current === ownerKey) return;
+      lastOwnerLoadedRef.current = ownerKey;
       try {
         let colRef;
         if (orderData._owner.type === 'anon') {

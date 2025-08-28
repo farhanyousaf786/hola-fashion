@@ -1,5 +1,5 @@
 import { db, auth } from "../firebase/firebaseConfig";
-import { collection, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, updateDoc, doc, setDoc } from "firebase/firestore";
 
 export async function saveOrder(orderData) {
   const user = auth.currentUser;
@@ -16,25 +16,23 @@ export async function saveOrder(orderData) {
       isAnonymous: false,
     });
   } else {
-    // Anonymous: generate anon UID (or use provided anonId)
+    // Anonymous: store as a flat doc at anonymousOrders/{orderId}
+    // Keep anonId in the document for correlation, but do not nest under it.
     let anonId = localStorage.getItem("anon_uid");
     if (!anonId) {
       anonId = crypto.randomUUID();
       localStorage.setItem("anon_uid", anonId);
     }
-    const anonOrdersRef = collection(db, "anonymousOrders", anonId, "orders");
-    orderRef = await addDoc(anonOrdersRef, {
+    const newDocRef = doc(collection(db, "anonymousOrders")); // auto-id becomes orderId
+    await setDoc(newDocRef, {
       ...orderData,
       anonId,
       createdAt: timestamp,
       isAnonymous: true,
+      orderId: newDocRef.id,
     });
+    orderRef = newDocRef;
   }
-  // Persist the generated document ID so server-side lookups by 'orderId' work
-  try {
-    await updateDoc(orderRef, { orderId: orderRef.id });
-  } catch (e) {
-    console.warn('[saveOrder] Failed to update orderId field', e);
-  }
+  // orderId is already embedded for both paths (users add later via updateDoc above, anon set inline)
   return orderRef;
 }

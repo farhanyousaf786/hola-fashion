@@ -82,7 +82,20 @@ async function getOrderById(req, res) {
       }
     }
 
-    if (snap.empty) return res.status(404).json({ error: 'Not found' });
+    if (snap.empty) {
+      // 3) New flat anonymous path fallback: anonymousOrders/{orderId}
+      try {
+        const flatRef = db.collection('anonymousOrders').doc(orderId);
+        const flatSnap = await flatRef.get();
+        if (flatSnap.exists) {
+          const data = flatSnap.data();
+          return res.json({ id: flatSnap.id, ...data, _owner: { type: 'anon_flat' } });
+        }
+      } catch (e) {
+        console.error('[orderController] flat anonymousOrders fallback failed:', e);
+      }
+      return res.status(404).json({ error: 'Not found' });
+    }
 
     const docSnap = snap.docs[0];
     const data = docSnap.data();
