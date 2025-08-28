@@ -10,6 +10,7 @@ import CheckoutPage from './pages/checkout/CheckoutPage';
 import OrderConfirmationPage from './pages/order-confirmation/OrderConfirmationPage';
 import AuthPage from './pages/auth/AuthPage';
 import ProfilePage from './pages/profile/ProfilePage';
+import MyOrdersPage from './pages/orders/MyOrdersPage';
 import WishlistPage from './pages/wishlist/WishlistPage';
 import TermsConditions from './pages/legal/TermsConditions';
 import PrivacyPolicy from './pages/legal/PrivacyPolicy';
@@ -52,11 +53,13 @@ function App() {
               {/* Auth and Other pages */}
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/orders" element={<MyOrdersPage />} />
               <Route path="/account" element={<ShopPage category="account" />} />
               <Route path="/wishlist" element={<WishlistPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/order-confirmation/:orderId" element={<OrderConfirmationPage />} />
+              <Route path="/order-confirmation/:uid/:orderId" element={<OrderConfirmationPage />} />
               <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
               
               {/* Legal Pages */}

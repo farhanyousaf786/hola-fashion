@@ -8,17 +8,41 @@ import './OrderConfirmationPage.css';
 const OrderConfirmationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { orderId } = useParams();
+  // Support routes like /order-confirmation/:orderId and /order-confirmation/:uid/:orderId
+  const { orderId, uid } = useParams();
   const [orderData, setOrderData] = useState(location.state?.orderData);
   const [loading, setLoading] = useState(false);
   const [allOrders, setAllOrders] = useState([]);
+
+  // Debug: log full order data whenever it changes
+  useEffect(() => {
+    if (orderData) {
+      try {
+        console.log('[OCP] orderData (state object):', orderData);
+        console.log('[OCP] orderData (JSON):', JSON.stringify(orderData, null, 2));
+      } catch {}
+    }
+  }, [orderData]);
 
   useEffect(() => {
     let isMounted = true;
     let unsub = () => {};
 
-    async function tryLoad(uid) {
+    async function tryLoad(authUid) {
       console.log('[OCP] tryLoad start', { orderId, uid });
+      // 0) If uid is provided in URL, try that path first
+      if (uid && orderId) {
+        try {
+          const userRef = doc(db, 'users', uid, 'orders', orderId);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            console.log('[OCP] Found order using URL uid');
+            return { id: userSnap.id, ...userSnap.data(), _owner: { type: 'user', id: uid } };
+          }
+        } catch (e) {
+          console.warn('URL uid order lookup failed:', e);
+        }
+      }
       // 1) Try Anonymous path first (works even if user now logged in)
       try {
         const anonId = localStorage.getItem('anon_uid');
@@ -35,13 +59,13 @@ const OrderConfirmationPage = () => {
       }
 
       // 2) Try User path if we have a uid
-      if (uid) {
+      if (authUid) {
         try {
-          const userRef = doc(db, 'users', uid, 'orders', orderId);
+          const userRef = doc(db, 'users', authUid, 'orders', orderId);
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
             console.log('[OCP] Found order in users path');
-            return { id: userSnap.id, ...userSnap.data(), _owner: { type: 'user', id: uid } };
+            return { id: userSnap.id, ...userSnap.data(), _owner: { type: 'user', id: authUid } };
           }
         } catch (e) {
           console.warn('User order lookup failed:', e);
@@ -71,18 +95,20 @@ const OrderConfirmationPage = () => {
     }
 
     async function init() {
-      if (orderData || !orderId) return;
+      if (!orderId) return;
       setLoading(true);
       // Wait for auth state, then attempt both lookups
       unsub = onAuthStateChanged(auth, async (user) => {
         try {
-          const loaded = await tryLoad(user?.uid);
+          // If we already have rich data with items, we can skip. Otherwise, try to load/merge.
+          const hasItems = Array.isArray(orderData?.items) && orderData.items.length > 0;
+          const loaded = hasItems ? null : await tryLoad(user?.uid);
           if (!isMounted) return;
           if (loaded) {
             console.log('[OCP] Loaded order data', loaded);
-            setOrderData(loaded);
+            setOrderData(prev => ({ ...(prev || {}), ...loaded }));
           } else {
-            console.log('[OCP] No order found for id', orderId);
+            if (!orderData) console.log('[OCP] No order found for id', orderId);
             // Server-side fallback: fetch via backend so links work on any device
             try {
               const res = await fetch(`/api/orders/${orderId}`);
@@ -90,7 +116,7 @@ const OrderConfirmationPage = () => {
                 const data = await res.json();
                 if (isMounted) {
                   console.log('[OCP] Fetched order via server fallback');
-                  setOrderData(data);
+                  setOrderData(prev => ({ ...(prev || {}), ...data }));
                 }
               } else {
                 const txt = await res.text();
@@ -253,26 +279,72 @@ const OrderConfirmationPage = () => {
           <div className="order-items">
             <h2>Order Items</h2>
             <div className="items-list">
-              {Array.isArray(orderData.items) && orderData.items.length > 0 ? (
-                orderData.items.map((item, index) => (
-                  <div key={index} className="order-item">
-                    <img src={item.image} alt={item.name} />
-                    <div className="item-details">
-                      <h3>{item.name}</h3>
-                      <p>Size: {item.selectedSize}</p>
-                      <p>Color: {item.selectedColor}</p>
-                      <p>Quantity: {item.quantity}</p>
+              {(() => {
+                // Build a robust items list: prefer saved items; else derive from Square payment result if present
+                // Saved items might be an array or an object map (e.g., {"0": {...}})
+                let savedItems = [];
+                if (Array.isArray(orderData.items)) {
+                  savedItems = orderData.items;
+                } else if (orderData.items && typeof orderData.items === 'object') {
+                  savedItems = Object.values(orderData.items);
+                }
+                let displayItems = savedItems;
+                if (!displayItems.length) {
+                  try {
+                    const pr = orderData?.paymentResult;
+                    // Square can return: order.lineItems or order.line_items depending on source
+                    const lineItems = pr?.order?.lineItems || pr?.order?.line_items || pr?.order?.line_items?.elements || [];
+                    if (Array.isArray(lineItems) && lineItems.length) {
+                      displayItems = lineItems.map(li => ({
+                        name: li.name || li.item?.name || 'Item',
+                        quantity: Number(li.quantity || li.qty || 1),
+                        price: Number(li.basePriceMoney?.amount || li.price || li.totalMoney?.amount || 0) / (li.basePriceMoney?.currency || li.totalMoney?.currency ? 100 : 1),
+                        image: li.imageUrl || li.image_url || '',
+                        selectedSize: li.metadata?.size || li.size || undefined,
+                        selectedColor: li.metadata?.color || li.color || undefined,
+                      }));
+                    }
+                  } catch {}
+                }
+                // Fallback 2: Some orders seem to store a single product at top level (name, price, quantity, size, color)
+                if (!displayItems.length) {
+                  const top = orderData || {};
+                  if (top && (top.name || top.price || top.quantity)) {
+                    displayItems = [{
+                      name: top.name || 'Item',
+                      quantity: Number(top.quantity || 1),
+                      price: Number(top.price || 0),
+                      image: top.image || top.img || '',
+                      selectedSize: top.size || top.selectedSize,
+                      selectedColor: top.color || top.selectedColor,
+                    }];
+                  }
+                }
+                // Debug: log derived display items
+                try {
+                  console.log('[OCP] Derived displayItems:', displayItems);
+                } catch {}
+                return displayItems && displayItems.length ? (
+                  displayItems.map((item, index) => (
+                    <div key={index} className="order-item">
+                      <img src={item.image || item.img || ''} alt={item.name || 'Item'} />
+                      <div className="item-details">
+                        <h3>{item.name || 'Item'}</h3>
+                        <p>Size: {item.selectedSize || item.size}</p>
+                        <p>Color: {item.selectedColor || item.color}</p>
+                        <p>Quantity: {item.quantity}</p>
+                      </div>
+                      <div className="item-price">
+                        ${Number(((item.price ?? 0)) * (item.quantity || 0)).toFixed(2)}
+                      </div>
                     </div>
-                    <div className="item-price">
-                      ${Number((item.price || 0) * (item.quantity || 0)).toFixed(2)}
-                    </div>
+                  ))
+                ) : (
+                  <div className="order-item">
+                    <p>No items found in this order.</p>
                   </div>
-                ))
-              ) : (
-                <div className="order-item">
-                  <p>No items found in this order.</p>
-                </div>
-              )}
+                );
+              })()}
             </div>
             <div className="order-total">
               <strong>Total: ${Number(orderData?.total || 0).toFixed(2)}</strong>
