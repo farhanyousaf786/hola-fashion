@@ -2,19 +2,22 @@ import React, { useState } from 'react';
 import './Footer.css';
 
 const Footer = () => {
-  const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactMessage, setContactMessage] = useState('');
 
-  const handleSubscribe = (e) => {
+  const handleAskSubmit = (e) => {
     e.preventDefault();
-    if (!ageConfirmed) {
-      alert('Please confirm you are at least 16 years of age.');
-      return;
-    }
-    console.log('Newsletter subscribe:', { email: newsletterEmail, ageConfirmed });
-    alert('Thanks for subscribing!');
-    setNewsletterEmail('');
-    setAgeConfirmed(false);
+    // TODO: wire this up to backend/email if desired
+    console.log('Footer question submitted:', {
+      name: contactName,
+      email: contactEmail,
+      comment: contactMessage,
+    });
+    alert('Thanks! Your question has been sent.');
+    setContactName('');
+    setContactEmail('');
+    setContactMessage('');
   };
 
   return (
@@ -36,22 +39,41 @@ const Footer = () => {
             </div>
           </div>
           <div className="footer-right">
-            <h3 className="newsletter-title">Get the freshest Rallina news</h3>
-            <form className="newsletter-form" onSubmit={handleSubscribe}>
-              <input
-                type="email"
-                className="newsletter-input"
-                placeholder="Your email here"
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                required
-              />
-              <button className="newsletter-btn" type="submit">Subscribe</button>
+            <div className="contact-form-header">
+              <h3 className="footer-title">Ask a question</h3>
+            </div>
+            <form className="contact-form" onSubmit={handleAskSubmit}>
+              <div className="form-group">
+                <input
+                  type="text"
+                  className="contact-input"
+                  placeholder="Your name"
+                  value={contactName}
+                  onChange={(e) => setContactName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="email"
+                  className="contact-input"
+                  placeholder="Your email"
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <textarea
+                  className="contact-textarea"
+                  placeholder="Your comment"
+                  value={contactMessage}
+                  onChange={(e) => setContactMessage(e.target.value)}
+                  required
+                />
+              </div>
+              <button className="send-query-btn" type="submit">Send</button>
             </form>
-            <label className="newsletter-note">
-              <input type="checkbox" checked={ageConfirmed} onChange={(e) => setAgeConfirmed(e.target.checked)} />
-              <span>By checking the box, you agree that you are at least 16 years of age.</span>
-            </label>
           </div>
         </div>
       </div>

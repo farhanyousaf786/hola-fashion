@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { db } from '../firebase/firebaseConfig';
+import { useToast } from './ToastContext';
+import { collection, doc, setDoc, deleteDoc, getDocs, serverTimestamp } from 'firebase/firestore';
 
 const WishlistContext = createContext();
 
@@ -14,56 +17,97 @@ export const useWishlist = () => {
 export const WishlistProvider = ({ children }) => {
   const [wishlistItems, setWishlistItems] = useState([]);
   const { user, isAuthenticated } = useAuth();
+  const { showError } = useToast();
 
-  // Load wishlist from localStorage when user logs in
+  // Keep Firestore payloads clean: remove undefined and non-serializable values
+  const sanitizeForFirestore = (obj) => {
+    const out = {};
+    Object.entries(obj || {}).forEach(([k, v]) => {
+      if (v === undefined) return; // drop undefined
+      if (typeof v === 'function') return; // drop functions
+      out[k] = v;
+    });
+    return out;
+  };
+
+  // Load wishlist from Firestore when user logs in
   useEffect(() => {
-    if (isAuthenticated && user) {
-      const savedWishlist = localStorage.getItem(`wishlist_${user.id}`);
-      if (savedWishlist) {
-        setWishlistItems(JSON.parse(savedWishlist));
+    const load = async () => {
+      if (isAuthenticated && user?.uid) {
+        try {
+          const colRef = collection(db, 'users', user.uid, 'wishlist');
+          const snap = await getDocs(colRef);
+          const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          setWishlistItems(items);
+        } catch (e) {
+          // Fallback: start empty if Firestore fails
+          setWishlistItems([]);
+          showError(`Failed to load wishlist. ${e?.code || e?.message || ''}`);
+        }
+      } else {
+        setWishlistItems([]);
       }
-    } else {
-      // Clear wishlist when user logs out
-      setWishlistItems([]);
-    }
-  }, [isAuthenticated, user]);
+    };
+    load();
+  }, [isAuthenticated, user?.uid]);
 
-  // Save wishlist to localStorage whenever it changes
+  // Optionally keep a lightweight local cache keyed by uid
   useEffect(() => {
-    if (isAuthenticated && user) {
-      localStorage.setItem(`wishlist_${user.id}`, JSON.stringify(wishlistItems));
+    if (isAuthenticated && user?.uid) {
+      localStorage.setItem(`wishlist_${user.uid}`, JSON.stringify(wishlistItems));
     }
-  }, [wishlistItems, isAuthenticated, user]);
+  }, [wishlistItems, isAuthenticated, user?.uid]);
 
-  const addToWishlist = (product) => {
-    if (!isAuthenticated) {
-      return false; // Cannot add if not authenticated
+  const addToWishlist = async (product) => {
+    if (!isAuthenticated || !user?.uid) return false;
+    const exists = wishlistItems.some(item => item.id === product.id);
+    if (exists) return false;
+    // Optimistic update
+    setWishlistItems(prev => [...prev, product]);
+    try {
+      const docRef = doc(db, 'users', user.uid, 'wishlist', product.id.toString());
+      // Persist a minimal, safe snapshot of the product
+      const payload = sanitizeForFirestore({
+        id: product.id?.toString?.() ?? String(product.id),
+        name: product.name || '',
+        price: typeof product.price === 'number' ? product.price : Number(product.price) || 0,
+        image: product.image || product.thumbnail || product.img || '',
+        slug: product.slug || undefined,
+        addedAt: serverTimestamp()
+      });
+      await setDoc(docRef, payload, { merge: true });
+    } catch (e) {
+      // Revert on failure
+      setWishlistItems(prev => prev.filter(i => i.id !== product.id));
+      showError(`Failed to save to wishlist. ${e?.code || e?.message || ''}`);
+      console.error('Wishlist Firestore write failed:', e);
+      return false;
     }
-
-    const isAlreadyInWishlist = wishlistItems.some(item => item.id === product.id);
-    if (!isAlreadyInWishlist) {
-      setWishlistItems(prev => [...prev, product]);
-      return true;
-    }
-    return false;
+    return true;
   };
 
-  const removeFromWishlist = (productId) => {
+  const removeFromWishlist = async (productId) => {
+    // Optimistic update
     setWishlistItems(prev => prev.filter(item => item.id !== productId));
+    try {
+      if (isAuthenticated && user?.uid) {
+        const docRef = doc(db, 'users', user.uid, 'wishlist', productId.toString());
+        await deleteDoc(docRef);
+      }
+    } catch (e) {
+      // ignore; UI already updated
+      showError(`Failed to remove from wishlist. ${e?.code || e?.message || ''}`);
+    }
   };
 
-  const toggleWishlist = (product) => {
-    if (!isAuthenticated) {
-      return false; // Cannot toggle if not authenticated
-    }
-
-    const isInWishlist = wishlistItems.some(item => item.id === product.id);
-    if (isInWishlist) {
-      removeFromWishlist(product.id);
-      return false; // Removed from wishlist
+  const toggleWishlist = async (product) => {
+    if (!isAuthenticated) return false;
+    const inList = wishlistItems.some(item => item.id === product.id);
+    if (inList) {
+      await removeFromWishlist(product.id);
+      return false;
     } else {
-      addToWishlist(product);
-      return true; // Added to wishlist
+      return await addToWishlist(product);
     }
   };
 

@@ -41,20 +41,17 @@ const AuthPage = () => {
     setError('');
 
     if (isLogin) {
-      // Login logic
+      // Login with Firebase Auth
       if (!formData.email || !formData.password) {
         setError('Please fill in all fields');
         return;
       }
-
-      // Simple validation - in real app, this would be API call
-      const userData = {
-        email: formData.email,
-        name: formData.email.split('@')[0],
-        id: Date.now()
-      };
-      
-      login(userData);
+      try {
+        await login(formData.email, formData.password);
+      } catch (err) {
+        // Errors are toasted in AuthContext; optionally keep local error
+        setError(err.message || 'Failed to sign in');
+      }
     } else {
       // Registration logic
       if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
@@ -72,12 +69,16 @@ const AuthPage = () => {
         return;
       }
 
-      const userData = {
-        name: formData.name,
-        email: formData.email
-      };
-
-      register(userData);
+      try {
+        await register({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password
+        });
+      } catch (err) {
+        // Errors are toasted in AuthContext; optionally keep local error
+        setError(err.message || 'Failed to create account');
+      }
     }
   };
 

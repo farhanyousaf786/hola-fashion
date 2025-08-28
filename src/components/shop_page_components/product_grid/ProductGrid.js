@@ -1,29 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './ProductGrid.css';
 import { useWishlist } from '../../../context/WishlistContext';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
+import LoginPromptModal from '../../common/LoginPromptModal/LoginPromptModal';
 
 const ProductGrid = ({ products }) => {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { isAuthenticated } = useAuth();
-  const { showSuccess, showInfo } = useToast();
+  const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
+  const [loginPromptOpen, setLoginPromptOpen] = useState(false);
 
-  const handleWishlistToggle = (product) => {
+  const handleWishlistToggle = async (product) => {
     if (!isAuthenticated) {
-      showInfo('You need to create an account to add items to your favorites!', 4000);
-      // Navigate to signup page after a short delay to let user see the toast
-      setTimeout(() => {
-        navigate('/auth');
-      }, 1500);
+      setLoginPromptOpen(true);
       return;
     }
-    
-    const wasAdded = toggleWishlist(product);
-    const message = wasAdded ? 'Added to wishlist!' : 'Removed from wishlist!';
-    showSuccess(message);
+    const result = await toggleWishlist(product);
+    if (result === true) {
+      showSuccess('Added to wishlist!');
+    } else if (result === false) {
+      // If it was in the list, toggle returns false (removed). If add failed, WishlistContext shows an error toast.
+      if (isInWishlist(product.id)) {
+        showSuccess('Removed from wishlist!');
+      }
+    } else {
+      showError('Could not update wishlist. Please try again.');
+    }
   };
 
   return (
@@ -35,13 +40,15 @@ const ProductGrid = ({ products }) => {
             <img src={product.image} alt={product.name} className="product-image" />
             <button
               className={`wishlist-btn ${isInWishlist(product.id) ? 'active' : ''}`}
-              onClick={(e) => {
+              title={!isAuthenticated ? 'Login to view your favourites' : (isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist')}
+              aria-label={!isAuthenticated ? 'Login to view your favourites' : (isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist')}
+              onClick={async (e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                handleWishlistToggle(product);
+                await handleWishlistToggle(product);
               }}
             >
-              <img src="/icons/heart-icon.svg" alt="Add to Wishlist" />
+              <img src="/icons/heart-icon.svg" alt="Wishlist" />
             </button>
           </div>
           </Link>
@@ -70,6 +77,15 @@ const ProductGrid = ({ products }) => {
           </div>
         </div>
       ))}
+      {/** Login prompt modal */}
+      <LoginPromptModal
+        open={loginPromptOpen}
+        onClose={() => setLoginPromptOpen(false)}
+        onGoToLogin={() => {
+          setLoginPromptOpen(false);
+          navigate('/auth?from=wishlist&action=favorite');
+        }}
+      />
     </div>
   );
 };

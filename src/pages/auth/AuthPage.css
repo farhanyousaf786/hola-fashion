@@ -88,19 +88,26 @@
 }
 
 .auth-submit-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #000;
+  color: #fff;
   padding: 15px;
-  border: none;
-  border-radius: 5px;
+  border: 1px solid #000;
+  border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .auth-submit-btn:hover {
-  transform: translateY(-2px);
+  background: #111;
+  border-color: #111;
+  transform: translateY(-1px);
+}
+
+.auth-submit-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.25);
 }
 
 .auth-toggle {

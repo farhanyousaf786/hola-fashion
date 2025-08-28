@@ -111,7 +111,7 @@ const TermsConditions = () => {
               If you have any questions about these Terms and Conditions, please contact us at:
             </p>
             <p>
-              <strong>Email:</strong> cs@couturecandy.com<br/>
+              <strong>Email:</strong> support@rallina.com<br/>
               <strong>Website:</strong> Rallina
             </p>
           </div>

@@ -81,6 +81,32 @@
   filter: brightness(0) invert(1); /* Makes the heart white when active */
 }
 
+/* Login CTA text shown when user is not authenticated */
+.wishlist-cta-text {
+  position: absolute;
+  top: 54px; /* just below the 40px button with small gap */
+  right: 0;
+  transform: translateY(0);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.2;
+  max-width: 160px;
+  text-align: right;
+  z-index: 2;
+}
+
+@media (max-width: 576px) {
+  .wishlist-cta-text {
+    right: 6px;
+    top: 50px;
+    max-width: 140px;
+    font-size: 10px;
+  }
+}
+
 .product-info {
   padding: 15px 12px 12px 12px;
 }

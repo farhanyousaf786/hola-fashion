@@ -4,18 +4,20 @@ import './BottomHeader.css';
 import { useCart } from '../../../context/CartContext';
 import { useAuth } from '../../../context/AuthContext';
 import { useWishlist } from '../../../context/WishlistContext';
+import { useToast } from '../../../context/ToastContext';
 
 const BottomHeader = () => {
   const { getCartItemCount } = useCart();
   const { isAuthenticated } = useAuth();
   const { getWishlistCount } = useWishlist();
+  const { showInfo } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleWishlistClick = (e) => {
     if (!isAuthenticated) {
       e.preventDefault();
-      navigate('/auth?from=wishlist&action=favorite');
+      showInfo('Login to view your favourites', 3500);
     }
   };
 

@@ -6,6 +6,7 @@ import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import LoginPromptModal from '../../components/common/LoginPromptModal/LoginPromptModal';
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -21,6 +22,7 @@ const ProductPage = () => {
   const { isAuthenticated } = useAuth();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
+  const [loginPromptOpen, setLoginPromptOpen] = useState(false);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -133,10 +135,9 @@ const ProductPage = () => {
 
   const handleAddToWishlist = () => {
     if (!isAuthenticated) {
-      navigate('/auth?from=wishlist&action=favorite');
+      setLoginPromptOpen(true);
       return;
     }
-    
     const wasAdded = toggleWishlist(product);
     const message = wasAdded ? 'Added to wishlist!' : 'Removed from wishlist!';
     showSuccess(message);
@@ -297,9 +298,11 @@ const ProductPage = () => {
               </button>
               <button 
                 className={`wishlist-btn-secondary ${product && isInWishlist(product.id) ? 'active' : ''}`} 
+                title={!isAuthenticated ? 'Login to view your favourites' : (isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist')}
+                aria-label={!isAuthenticated ? 'Login to view your favourites' : (isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist')}
                 onClick={handleAddToWishlist}
               >
-                <img src="/icons/heart-icon.svg" alt="Add to Wishlist" />
+                <img src="/icons/heart-icon.svg" alt="Wishlist" />
               </button>
             </div>
           </div>
@@ -403,6 +406,15 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+      {/** Login prompt modal */}
+      <LoginPromptModal
+        open={loginPromptOpen}
+        onClose={() => setLoginPromptOpen(false)}
+        onGoToLogin={() => {
+          setLoginPromptOpen(false);
+          navigate('/auth?from=wishlist&action=favorite');
+        }}
+      />
     </div>
   );
 };

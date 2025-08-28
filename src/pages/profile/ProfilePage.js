@@ -14,8 +14,8 @@ const ProfilePage = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -23,64 +23,64 @@ const ProfilePage = () => {
     return null; // Will redirect in useEffect
   }
 
+  const displayName = user?.name || user?.displayName || (user?.email ? user.email.split('@')[0] : '');
+  const createdAt = (() => {
+    const v = user?.createdAt;
+    if (!v) return '';
+    if (typeof v === 'string' || typeof v === 'number') {
+      const d = new Date(v);
+      return isNaN(d) ? '' : d.toLocaleDateString();
+    }
+    // Firestore Timestamp
+    if (v?.seconds) {
+      const d = new Date(v.seconds * 1000);
+      return d.toLocaleDateString();
+    }
+    return '';
+  })();
+
   return (
     <div className="profile-page">
       <div className="profile-container">
         <div className="profile-header">
           <div className="profile-avatar">
-            <img 
-              src="/icons/profile-icon.svg" 
-              alt="Profile" 
-              className="avatar-icon"
-            />
+            <img src="/icons/profile-icon.svg" alt="Profile" className="avatar-icon" />
           </div>
-          <h1>My Profile</h1>
+          <div className="header-texts">
+            <h1>HELLO {displayName ? displayName.toUpperCase() : 'THERE'}</h1>
+            <p className="muted">{user?.email}</p>
+          </div>
         </div>
 
-        <div className="profile-content">
-          <div className="profile-section">
-            <h2>Account Information</h2>
-            <div className="info-grid">
-              <div className="info-item">
-                <label>Full Name</label>
-                <p>{user.name}</p>
-              </div>
-              <div className="info-item">
-                <label>Email</label>
-                <p>{user.email}</p>
-              </div>
-              <div className="info-item">
-                <label>Member Since</label>
-                <p>{new Date(user.createdAt).toLocaleDateString()}</p>
-              </div>
-            </div>
-          </div>
+        <div className="profile-layout">
+          <aside className="profile-sidebar">
+            <button className="sidebar-item active" type="button">Account Information</button>
+            <button className="sidebar-item" type="button" onClick={() => navigate('/orders')}>My Orders</button>
+            <button className="sidebar-item" type="button" onClick={() => navigate('/address-book')}>Address Book</button>
+            <button className="sidebar-item" type="button" onClick={() => navigate('/wishlist')}>My Wishlist</button>
+            <button className="sidebar-item" type="button">Change Password</button>
+            <button className="sidebar-item danger" type="button" onClick={handleLogout}>Log Out</button>
+          </aside>
 
-          <div className="profile-section">
-            <h2>Account Actions</h2>
-            <div className="action-buttons">
-              <button className="btn-secondary" onClick={() => navigate('/wishlist')}>
-                View Wishlist
-              </button>
-              <button className="btn-secondary" onClick={() => navigate('/cart')}>
-                View Cart
-              </button>
-              <button className="btn-secondary" onClick={() => navigate('/shop')}>
-                Continue Shopping
-              </button>
+          <main className="profile-content">
+            <div className="content-header">
+              <h2>Account Information</h2>
             </div>
-          </div>
+            <div className="fields">
+              <div className="field-row">
+                <span className="field-label">Name</span>
+                <span className="field-value">{displayName || '—'}</span>
+              </div>
+              <div className="field-row">
+                <span className="field-label">Email Address:</span>
+                <span className="field-value">{user?.email || '—'}</span>
+              </div>
+            </div>
 
-          <div className="profile-section">
-            <h2>Account Settings</h2>
-            <div className="settings-actions">
-              <button className="btn-outline">Edit Profile</button>
-              <button className="btn-outline">Change Password</button>
-              <button className="btn-danger" onClick={handleLogout}>
-                Sign Out
-              </button>
+            <div className="content-actions">
+              <button className="btn-edit" onClick={() => navigate('/account')}>Edit</button>
             </div>
-          </div>
+          </main>
         </div>
       </div>
     </div>
