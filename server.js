@@ -4,6 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const paymentRoutes = require('./routes/paymentRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const emailRoutes = require('./routes/emailRoutes');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -14,6 +15,7 @@ app.use(cors()); // Allow dev frontends to call API
 // API routes
 app.use('/api/payments', paymentRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/email', emailRoutes);
 
 // Static serving only in production
 if (process.env.NODE_ENV === 'production') {
