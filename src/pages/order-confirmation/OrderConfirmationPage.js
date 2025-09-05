@@ -253,6 +253,34 @@ const OrderConfirmationPage = () => {
   const resolvedDate = resolveDate(candidateTs) || new Date();
   const orderDateText = resolvedDate.toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'medium' });
 
+  // Build a carrier tracking URL from known carriers if backend didn't store one
+  const buildTrackingUrl = (shipping) => {
+    try {
+      if (!shipping) return null;
+      if (shipping.tracking_url) return shipping.tracking_url;
+      const num = shipping.tracking_number;
+      const carrier = (shipping.carrier || '').toUpperCase();
+      if (!num) return null;
+      switch (carrier) {
+        case 'USPS':
+          return `https://tools.usps.com/go/TrackConfirmAction_input?origTrackNum=${encodeURIComponent(num)}`;
+        case 'UPS':
+          return `https://www.ups.com/track?loc=en_US&tracknum=${encodeURIComponent(num)}`;
+        case 'FEDEX':
+          return `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(num)}`;
+        case 'DHL':
+          return `https://www.dhl.com/global-en/home/tracking/tracking-express.html?submit=1&tracking-id=${encodeURIComponent(num)}`;
+        default:
+          return null;
+      }
+    } catch {
+      return null;
+    }
+  };
+
+  const shipping = orderData?.shipping || orderData?.shippingInfo || null;
+  const trackingUrl = buildTrackingUrl(shipping);
+
   return (
     <div className="order-confirmation-page">
       <div className="confirmation-container">
@@ -295,6 +323,47 @@ const OrderConfirmationPage = () => {
               <p>{orderData?.customerDetails?.phone}</p>
             </div>
           </div>
+
+          {shipping && (shipping.tracking_number || shipping.label_url || shipping.status) && (
+            <div className="shipment-status">
+              <h2>Shipment Status</h2>
+              <div className="info-grid">
+                {shipping.status && (
+                  <div className="info-item">
+                    <span className="label">Status:</span>
+                    <span className="value">{String(shipping.status).toUpperCase()}</span>
+                  </div>
+                )}
+                {shipping.carrier && (
+                  <div className="info-item">
+                    <span className="label">Carrier:</span>
+                    <span className="value">{shipping.carrier}</span>
+                  </div>
+                )}
+                {shipping.service && (
+                  <div className="info-item">
+                    <span className="label">Service:</span>
+                    <span className="value">{shipping.service}</span>
+                  </div>
+                )}
+                {shipping.tracking_number && (
+                  <div className="info-item">
+                    <span className="label">Tracking #:</span>
+                    <span className="value">{shipping.tracking_number}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="action-buttons">
+                {trackingUrl && (
+                  <button className="print-btn" onClick={() => window.open(trackingUrl, '_blank')}>Track Package</button>
+                )}
+                {shipping.label_url && (
+                  <button className="print-btn" onClick={() => window.open(shipping.label_url, '_blank')}>View Shipping Label (PDF)</button>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="order-items">
             <h2>Order Items</h2>

@@ -51,6 +51,12 @@ exports.sendOrderConfirmation = async (req, res) => {
             Best regards,<br>
             <span style="color: #2d3748; font-weight: 500;">Rallina Team</span>
           </p>
+          
+          <p style="margin-top: 40px; font-size: 12px; color: #718096; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+            You are receiving this email because you made a purchase on Rallina.<br>
+            Rallina Inc., 123 Main Street, New York, NY 10001, USA<br>
+            If this wasn't you, please <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/unsubscribe" style="color: #3182ce;">unsubscribe</a>.
+          </p>
         </div>
       `
     };
